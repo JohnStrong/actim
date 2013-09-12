@@ -31,10 +31,10 @@ class Datastore() {
 	private val DB = MongoClient()("instant_messenger")
 
 	// client collection
-	private lazy val clients = DB("users")
+	private def clients = DB("users")
 
 	// message collection
-	private lazy val messages = DB("messages")
+	private def messages = DB("messages")
 
 	def findClient(email: String):Option[DBObject] = {
 		clients.findOne("email" $eq email)
