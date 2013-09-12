@@ -1,19 +1,39 @@
 package chatclient.source
 
-import java.io._
-import java.net._
+import scala.swing._
+import swing.event._
 
-import scala.actors.Actor
-import scala.actors.remote.RemoteActor
-import scala.actors.remote.RemoteActor._
-import scala.actors.remote.Node
+object Client extends SimpleSwingApplication{
+	// handle raw messages to the client message handler
+	private val messgaeHandle = new ClientHandler
 
-// client Actor
-object Client extends App{
-	val PORT = 8080
-	val ADDRESS = "127.0.0.1"
-	val peer = Node(ADDRESS, PORT)
+	// Swing initalizer
+	def top = mainFrame(400, 500)
 
-	val clientHandler:Actor = new ClientHandler(peer)
-	clientHandler.start
+	/*******************************************
+	* 
+	* Private classes to build the User Interface
+	*
+	********************************************/
+	private def mainFrame(w:Int, h:Int):Frame = {
+		new MainFrame {
+				title = "Scala Instant Messenger"
+				contents = new GridPanel(2,2) {
+					contents += button("login")
+					contents += button("friends")
+				}
+				size = new Dimension(w, h)
+			}
+	}
+
+	private def button(t:String):Button = {
+		new Button {
+			text = t
+			reactions += {
+				case ButtonClicked(_) => {
+					messgaeHandle.login("strngj411@gmail.com")
+				}
+			}
+		}
+	}
 }
