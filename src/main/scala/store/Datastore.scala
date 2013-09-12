@@ -1,12 +1,30 @@
 package chatclient.store
 
-import scala.actors.Actor
-import scala.actors.remote.RemoteActor
-import scala.actors.remote.RemoteActor._
-import scala.actors.remote.Node
-
 import com.mongodb.casbah.Imports._
 
+// wrapper class for calls the datastore object,
+// building an xml result from the query,
+// returns to the Remote
+class QueryProcessor {
+
+	// class that maps query tuples to a type
+	private implicit def as(obj:DBObject) = new As(obj)
+
+	// initalize a new mongodb datastore object
+	private def datastore = new Datastore
+
+	// find client information to build profile view
+	def find(email:String):String = {
+		val entry = datastore.findClient(email) match {
+			case Some(x) => "test"
+			case _ => "test fail"
+		}
+
+		entry
+	}
+}
+
+// Mongo store
 class Datastore() {
 
 	// open chat client datastore
@@ -18,14 +36,7 @@ class Datastore() {
 	// message collection
 	private lazy val messages = DB("messages")
 
-	// class that maps query tuples to a type
-	private implicit def as(obj:DBObject) = new As(obj)
-
-	// open a mongo db conneciton
-	def find(email:String):Option[DBObject] = {
-		clients.findOne("email" $eq email) match {
-			case Some(x) => Some(x)
-			case _ => None
-		}
+	def findClient(email: String):Option[DBObject] = {
+		clients.findOne("email" $eq email)
 	}
 }

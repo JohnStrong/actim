@@ -13,9 +13,17 @@ import chatclient.sink.Validate
 case class Confirm(result: String)
 case class Auth(email: String)
 
-// handle packaged messages to the remote Actor
-class ClientHandler {
+// handle UI events
+class ClientMessageHandler {
+	private val clientActor = new ClientActor
 
+	def login(email:String) {
+		clientActor.message ! Auth(email)
+	}
+}
+
+// send/receive messages to/form remote actor
+class ClientActor {
 	RemoteActor.classLoader = getClass().getClassLoader()
 
 	// Port to listen for Remote Actor on
@@ -27,7 +35,7 @@ class ClientHandler {
 	// Open a Peer connection to the Port on the Address
 	private val PEER = Node(ADDRESS, PORT)
 
-	private val message:Actor = actor {
+	val message:Actor = actor {
 		// find the remote actor on the 'ChatClient namespace
 		val remote = select(PEER, 'ChatClient)
 
@@ -42,10 +50,5 @@ class ClientHandler {
 				}
 			}
 		}
-	}
-
-	// handle UI events
-	protected def login(email:String) {
-		message ! Auth(email)
 	}
 }
