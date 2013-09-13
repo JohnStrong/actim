@@ -1,5 +1,7 @@
 package chatclient.store
 
+import xml._
+
 import com.mongodb.casbah.Imports._
 
 // wrapper class for calls the datastore object,
@@ -7,25 +9,23 @@ import com.mongodb.casbah.Imports._
 // returns to the Remote
 class QueryProcessor {
 
-	// class that maps query tuples to a type
-	private implicit def as(obj:DBObject) = new As(obj)
-
 	// initalize a new mongodb datastore object
 	private def datastore = new Datastore
 
 	// find client information to build profile view
 	def find(email:String):String = {
-		val entry = datastore.findClient(email) match {
-			case Some(x) => "test"
-			case _ => "test fail"
+		datastore.getClientDetails(email) match {
+			case Some(x) => x.productIterator.toList foreach( println(_) ); "test success!"
+			case _ => "test failure/unexpected"
 		}
-
-		entry
 	}
 }
 
 // Mongo store
 class Datastore() {
+
+	// class that maps query tuples to a type
+	private implicit def as(obj:DBObject) = new As(obj)
 
 	// open chat client datastore
 	private val DB = MongoClient()("instant_messenger")
@@ -36,7 +36,12 @@ class Datastore() {
 	// message collection
 	private def messages = DB("messages")
 
-	def findClient(email: String):Option[DBObject] = {
-		clients.findOne("email" $eq email)
+	def getClientDetails(email: String):Option[Tuple3[String, String, List[String]]] = {
+		clients.findOne("email" $eq email) match {
+			case Some(x) => {
+				Some((x string("name"), x string("about"), x list("friends")))
+			}
+			case _ => None
+		}
 	}
 }

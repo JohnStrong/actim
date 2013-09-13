@@ -1,5 +1,7 @@
 package chatclient.source
 
+import xml._
+
 import scala.actors._
 import scala.actors.Actor._
 import scala.actors.remote.RemoteActor

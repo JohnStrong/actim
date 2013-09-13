@@ -23,7 +23,7 @@ object Client extends SimpleSwingApplication{
 					text = "login"
 					reactions += {
 						case ButtonClicked(_) => {
-							messgaeHandle.login("strngj411@gmail.com")
+							
 						}
 					}
 				}

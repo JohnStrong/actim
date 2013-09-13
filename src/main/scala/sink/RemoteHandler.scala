@@ -20,13 +20,13 @@ class RemoteHandler(port:Int) extends Actor {
 		register('ChatClient, this)
 		
 		// mongo store for remote storage
-		val store = new QueryProcessor
+		val query = new QueryProcessor
 
 		loop {
 			react {
 				// user authentication
 				case Validate(email) => {
-					sender ! Confirm(store find(email))
+					sender ! Confirm(query find(email))
 				}
 			}
 		}
