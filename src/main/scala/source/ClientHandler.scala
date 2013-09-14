@@ -1,56 +1,27 @@
 package chatclient.source
 
-import xml._
+import akka.actor.Actor
+import akka.actor.Props
 
-import scala.actors._
-import scala.actors.Actor._
-import scala.actors.remote.RemoteActor
-import scala.actors.remote.RemoteActor._
-import scala.actors.remote.Node
+import chatclient.sink.RemoteHandle
 
-import chatclient.sink.RemoteHandler
-import chatclient.sink.Validate
-
-/* =+= actor case-classes =+= */
-case class Confirm(result: String)
-case class Auth(email: String)
-
-// handle UI events
-class ClientMessageHandler {
-	private val clientActor = new ClientActor
-
-	def login(email:String) {
-		clientActor.message ! Auth(email)
-	}
+object ClientHandle {
+	/* =+= actor case-classes =+= */
+	case class Confirm(result: String)
+	case class Auth(email: String)
 }
 
 // send/receive messages to/form remote actor
-class ClientActor {
-	RemoteActor.classLoader = getClass().getClassLoader()
+class ClientHandler extends Actor {
+	
+	val remote =
+		context.actorSelection("akka.tcp://127.0.0.1:8080/ChatClient")
 
-	// Port to listen for Remote Actor on
-	private val PORT = 8080
-
-	// Address of the Remote Actor
-	private val ADDRESS = "127.0.0.1"
-
-	// Open a Peer connection to the Port on the Address
-	private val PEER = Node(ADDRESS, PORT)
-
-	val message:Actor = actor {
-		// find the remote actor on the 'ChatClient namespace
-		val remote = select(PEER, 'ChatClient)
-
-		// listen for incoming messages from the Client UI
-		receive {
-			case Auth(email) => {
-				remote ! Validate(email)
-				reply {
-					receive {
-						case Confirm(str) => println("confirm : " + str)
-					}
-				}
-			}
+	// listen for incoming messages from the Client UI
+	def receive = {
+		case ClientHandle.Auth(email) => {
+			remote ! RemoteHandle.Validate(email)
 		}
+		case ClientHandle.Confirm(str) => println("confirm : " + str)
 	}
 }

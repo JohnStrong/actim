@@ -5,11 +5,8 @@ import org.junit.runner.RunWith
 import org.scalatest._
 import org.scalatest.junit.JUnitRunner
 
-import scala.actors._
-import scala.actors.Actor._
-import scala.actors.remote.RemoteActor
-import scala.actors.remote.RemoteActor._
-import scala.actors.remote.Node
+import akka.actor.Actor
+import akka.actor.Props
 
 import xml._
 import com.mongodb.casbah.Imports._
@@ -29,27 +26,30 @@ object ApplicationWorkflowConst {
 @RunWith(classOf[JUnitRunner])
 class ApplicationWorkflowTest extends FunSuite with BeforeAndAfter {
 
-	// remote peer connection
-	var peer:Node = _
-
 	before {
-		peer = Node(ApplicationWorkflowConst.ADDRESS, ApplicationWorkflowConst.PORT)
+		
 	}
 
 	test("successful login results in a query returning 'name', 'about', 'friends'") {
-		try {
-			val act:Actor = actor {
-				
-				val remote = select(peer, 'ChatClient)
-				remote ! Validate(ApplicationWorkflowConst.EMAIL)
+		new Workflow(ApplicationWorkflowConst.EMAIL)
+	}
+}
 
-				receive {
-					case Confirm(res) => println(res); assert(res === "test success!")
-					case _ => //assert(false)
-				}
-			}
-		} catch {
-			case e:Exception => //assert(false)
-		}	
+class Workflow(email: String) extends Actor {
+
+	override def preStart():Unit = {
+		val tester = context.actorOf(Props[Tester], "tester")
+
+		tester ! Test.Login
+	}
+}
+
+object Test {
+	case object Login(email: String)
+}
+
+class Tester extends Actor {
+	def receive = {
+		case Test.Login(email) => email
 	}
 }

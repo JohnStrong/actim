@@ -13,11 +13,24 @@ class QueryProcessor {
 	private def datastore = new Datastore
 
 	// find client information to build profile view
-	def find(email:String):String = {
-		datastore.getClientDetails(email) match {
-			case Some(x) => x.productIterator.toList foreach( println(_) ); "test success!"
-			case _ => "test failure/unexpected"
+	def getProfile(implicit email:String):Elem = {
+		datastore.getClientProfile(email) match {
+			case Some(x) =>  {
+				x.productIterator.toList foreach( x => {
+					println(x) 
+				})
+
+				<example>"test success!"</example>
+			}
+			case _ => <example>"test failure!"</example>
 		}
+	}
+
+	// get any offline messages stored for the client
+	def getUnreadMessages(implicit email: String):Elem = {
+		datastore.getOfflineMessages(email)
+
+		<example>"test"</example>
 	}
 }
 
@@ -36,12 +49,20 @@ class Datastore() {
 	// message collection
 	private def messages = DB("messages")
 
-	def getClientDetails(email: String):Option[Tuple3[String, String, List[String]]] = {
+	def getClientProfile(email: String):Option[Tuple3[String, String, List[String]]] = {
 		clients.findOne("email" $eq email) match {
 			case Some(x) => {
 				Some((x string("name"), x string("about"), x list("friends")))
 			}
-			case _ => None
+			case _ => {
+				None
+			}
 		}
 	}
+
+	def getOfflineMessages(email: String) {
+		//val a = List() ++ for (m <- messages.find("email" $ eq email)) yield x
+		//println(a)
+		
+	}	
 }
