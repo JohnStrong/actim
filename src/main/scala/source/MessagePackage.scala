@@ -13,8 +13,6 @@ object MessagePackage {
 class ClientMessageHandler extends Actor{
 	override def preStart():Unit = {
 		val clientHandler = context.actorOf(Props[ClientHandler], "clientHandler")
-
-		clientHandler ! ClientHandle.Auth("strngj411@gmail.com")
 	}
 
 	def receive = {

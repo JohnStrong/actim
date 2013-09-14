@@ -13,8 +13,7 @@ import com.mongodb.casbah.Imports._
 
 import chatclient.sink.Validate
 
-case class Confirm(result:String)
-
+// encapsulate constants in object
 object ApplicationWorkflowConst {
 	val PORT = 8080
 
@@ -23,6 +22,18 @@ object ApplicationWorkflowConst {
 	val EMAIL = "strngj411@gmail.com"
 }
 
+// Actors used to communicate with the remote
+object Test {
+	case class Login(email: String)
+}
+
+class Tester extends Actor {
+	def receive = {
+		case Test.Login(email) => email
+	}
+}
+
+// begin test class
 @RunWith(classOf[JUnitRunner])
 class ApplicationWorkflowTest extends FunSuite with BeforeAndAfter {
 
@@ -41,15 +52,5 @@ class Workflow(email: String) extends Actor {
 		val tester = context.actorOf(Props[Tester], "tester")
 
 		tester ! Test.Login
-	}
-}
-
-object Test {
-	case object Login(email: String)
-}
-
-class Tester extends Actor {
-	def receive = {
-		case Test.Login(email) => email
 	}
 }

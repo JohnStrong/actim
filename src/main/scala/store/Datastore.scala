@@ -13,6 +13,7 @@ class QueryProcessor {
 	private def datastore = new Datastore
 
 	// find client information to build profile view
+	// NOTE: generic xml returned here just for example sake until complete
 	def getProfile(implicit email:String):Elem = {
 		datastore.getClientProfile(email) match {
 			case Some(x) =>  {
@@ -61,8 +62,6 @@ class Datastore() {
 	}
 
 	def getOfflineMessages(email: String) {
-		//val a = List() ++ for (m <- messages.find("email" $ eq email)) yield x
-		//println(a)
-		
+		// TODO
 	}	
 }
