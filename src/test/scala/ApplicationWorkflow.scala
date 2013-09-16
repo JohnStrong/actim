@@ -11,10 +11,11 @@ import akka.actor.Props
 import xml._
 import com.mongodb.casbah.Imports._
 
-import chatclient.sink.Validate
+import chatclient.sink.Remote._
 
 // encapsulate constants in object
 object ApplicationWorkflowConst {
+	
 	val PORT = 8080
 
 	val ADDRESS = "127.0.0.1"
@@ -28,6 +29,7 @@ object Test {
 }
 
 class Tester extends Actor {
+	
 	def receive = {
 		case Test.Login(email) => email
 	}

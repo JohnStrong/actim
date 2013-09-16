@@ -3,9 +3,9 @@ package chatclient.source
 import swing._
 import swing.event._
 
-object Client extends SimpleSwingApplication{
+object ClientInterface extends SimpleSwingApplication{
 	// handle raw messages to the client message handler
-	private val messgaeHandle = new ClientMessageHandler
+	// private val messgaeHandle = new ClientMessageHandler
 
 	// Swing initalizer
 	def top = mainFrame(500, 500)

@@ -3,46 +3,39 @@ package chatclient.sink
 import akka.actor.Actor
 import akka.actor.Props
 
-import chatclient.store.QueryProcessor
-import chatclient.source.ClientHandle
+import chatclient.source.MessageHandler
+import chatclient.store.{ClientStore, MessageStore, ClientEntity}
 
 import xml._
 
-class Remote extends Actor {
-
-	// create chatClient actor
-	override def preStart(): Unit = {
-		val chatClient = context.actorOf(Props[RemoteHandler], "chatClient")
-	}
-
-	def receive = {
-		case RemoteHandle.Done(x) => context.stop(self)
-	}
-}
-
 // singleton that holds case objects for remote Actor
-object RemoteHandle {
+object Remote {
 
 	// authentication/get profile data
 	case class Validate(email:String)
 	case class Done(status:String)
 }
 
-class RemoteHandler(port:Int) extends Actor {
+class Remote(port:Int) extends Actor {
 
 	// mongo store for remote storage
-	val query = new QueryProcessor
+	val clientEntity = new ClientEntity(new ClientStore())
 
 	def receive = {
 		
 		// if successful return profile and offline messages
-		case RemoteHandle.Validate(email) => {
-			implicit var e = email
+		case Remote.Validate(email) => {
+			implicit val e = email
 
-			val profile:Elem = query getProfile
-			val messages:Elem = query getUnreadMessages
+			clientEntity.getOne match {
+				case Some(profile) => {
+					// return xml to message handler
+					sender ! MessageHandler.Confirm(profile)
+				}
+				case _ => // send error
+			}
 
-			sender ! ClientHandle.Confirm("test")
+			
 		}
 	}
 }

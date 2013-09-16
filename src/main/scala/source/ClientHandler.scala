@@ -3,25 +3,30 @@ package chatclient.source
 import akka.actor.Actor
 import akka.actor.Props
 
-import chatclient.sink.RemoteHandle
+import chatclient.sink.Remote
 
-object ClientHandle {
+import xml._
+
+object MessageHandler {
 	/* =+= actor case-classes =+= */
-	case class Confirm(result: String)
+	case class Confirm(profile: Elem)
 	case class Auth(email: String)
 }
 
 // send/receive messages to/form remote actor
-class ClientHandler extends Actor {
+class Client extends Actor {
 	
 	val remote =
 		context.actorSelection("akka.tcp://127.0.0.1:8080/ChatClient")
 
 	// listen for incoming messages from the Client UI
 	def receive = {
-		case ClientHandle.Auth(email) => {
-			remote ! RemoteHandle.Validate(email)
+		
+		case MessageHandler.Auth(email) => {
+			remote ! Remote.Validate(email)
 		}
-		case ClientHandle.Confirm(str) => println("confirm : " + str)
+		case MessageHandler.Confirm(profile) => {
+			println("confirm : " + profile)
+		}
 	}
 }

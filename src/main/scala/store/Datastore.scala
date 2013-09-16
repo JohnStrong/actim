@@ -1,67 +1,51 @@
 package chatclient.store
 
-import xml._
-
 import com.mongodb.casbah.Imports._
 
-// wrapper class for calls the datastore object,
-// building an xml result from the query,
-// returns to the Remote
-class QueryProcessor {
+trait Datastore {
 
-	// initalize a new mongodb datastore object
-	private def datastore = new Datastore
+	// open chat client datastore
+	protected val DB = MongoClient()("instant_messenger")
 
-	// find client information to build profile view
-	// NOTE: generic xml returned here just for example sake until complete
-	def getProfile(implicit email:String):Elem = {
-		datastore.getClientProfile(email) match {
-			case Some(x) =>  {
-				x.productIterator.toList foreach( x => {
-					println(x) 
-				})
+	def getOne(s: String):Option[DBObject]
 
-				<example>"test success!"</example>
-			}
-			case _ => <example>"test failure!"</example>
+	def getAll():List[DBObject]
+}
+
+// handle client queries to datastore
+class ClientStore extends Datastore {
+
+	private val clients = DB("clients")
+
+	// get one client with details
+	override def getOne(email: String):Option[DBObject] = {
+		clients.findOne("email" $eq email) match {
+			case Some(x) => Some(x)
+			case _ => None
 		}
 	}
 
-	// get any offline messages stored for the client
-	def getUnreadMessages(implicit email: String):Elem = {
-		datastore.getOfflineMessages(email)
-
-		<example>"test"</example>
+	// get all clients
+	override def getAll():List[DBObject] = {
+		// TODO
+		List()
 	}
 }
 
-// Mongo store
-class Datastore() {
+// handle message queries to datastore
+class MessageStore(email: String) extends Datastore {
 
-	// class that maps query tuples to a type
-	private implicit def as(obj:DBObject) = new As(obj)
+	private val messages = DB("messages")
 
-	// open chat client datastore
-	private val DB = MongoClient()("instant_messenger")
-
-	// client collection
-	private def clients = DB("users")
-
-	// message collection
-	private def messages = DB("messages")
-
-	def getClientProfile(email: String):Option[Tuple3[String, String, List[String]]] = {
-		clients.findOne("email" $eq email) match {
-			case Some(x) => {
-				Some((x string("name"), x string("about"), x list("friends")))
-			}
-			case _ => {
-				None
-			}
-		}
+	// get the most recent message from a client e to this client instance 
+	override def getOne(e: String):Option[DBObject] = {
+		//TODO
+		None
 	}
 
-	def getOfflineMessages(email: String) {
-		// TODO
-	}	
+	// get All messages
+	override def getAll():List[DBObject] = {
+		//TODO
+		List()
+	}
 }

@@ -6,7 +6,7 @@ import akka.actor.Actor
 import akka.actor.Props
 
 // handle UI events and package to xml format
-object MessagePackage {
+/*object MessagePackage {
 	case class Login(email: String)
 }
 
@@ -18,4 +18,4 @@ class ClientMessageHandler extends Actor{
 	def receive = {
 		case MessagePackage.Login(x) => // todo
 	}
-}
+}*/
