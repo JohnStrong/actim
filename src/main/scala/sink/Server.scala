@@ -1,16 +1,14 @@
 package chatclient.sink
 
 import akka.actor.Actor
+import akka.actor.ActorSystem
 import akka.actor.Props
 
-class Server extends Actor {
+object Server {
 
-	// create chatClient actor
-	override def preStart(): Unit = {
-		val chatClient = context.actorOf(Props[Remote], "chatClient")
-	}
-
-	def receive = {
-		case Remote.Done(x) => context.stop(self)
+	// entry point for the remote
+	def main(args: Array[String]) {
+		val system = ActorSystem("ChatClient")
+		val remote = system.actorOf(Props[Remote], "remote.sink.chatclient")
 	}
 }

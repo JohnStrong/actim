@@ -1,48 +1,41 @@
 package chatclient.store
 
+import akka.actor.Actor
+import akka.actor.Actor._
+import akka.actor.Props
+
 import com.mongodb.casbah.Imports._
 
 import xml._
 
-object Package {
-
-	// class that maps query tuples to a type
-	implicit def as(obj: DBObject) = new As(obj)
-
-	// package client colums
-	def packageClient(entity: DBObject):Elem = {
-		// get attributes we are interested in
-		val email = entity string("email")
-		val name = entity string("name")
-		val about = entity string("about")
-
-		<client>
-			<id>{email}</id>
-			<name>{name}</name>
-			<about>{about}</about>
-		</client>
-	}
-
-	// package message columns
-	def packageMessage(entity: DBObject):Elem =  {
-		<message>test</message>
-	}
+object ClientEntity {
+	case object All
+	case class One(email: String)
 }
 
 // wrapper class for calls the datastore object
-class ClientEntity(datastore: Datastore) {
+class ClientEntity extends Actor {
 	
-	def getAll():Unit = {
-		datastore.getAll()
-	}
+	val pack = context.actorOf(Props[Package], "package.store.chatclient")
+	val datastore = new ClientStore
 
-	// find client information to build profile view
-	def getOne(implicit email: String):Option[Elem] = {
+	def receive = {
+		
+		case ClientEntity.All => {
+			datastore.getAll()
+		}
 
-		datastore.getOne(email: String) match {
+		// find client information to build profile view
+		case ClientEntity.One(email) => {
 
-			case Some(x) => Some(Package.packageClient(x))
-			case _ => None
+			datastore.getOne(email) match {
+
+				case Some(x) => {
+					pack ! Package.Client(x)
+				}
+
+				case _ => // handle error
+			}
 		}
 	}
 }

@@ -1,4 +1,4 @@
-package chatclient.test
+package chatclient.test.runners
 
 import org.junit.runner.RunWith
 
@@ -11,7 +11,7 @@ import akka.actor.Props
 import xml._
 import com.mongodb.casbah.Imports._
 
-import chatclient.sink.Remote._
+import chatclient.sink.Remote
 
 // encapsulate constants in object
 object ApplicationWorkflowConst {
@@ -23,36 +23,15 @@ object ApplicationWorkflowConst {
 	val EMAIL = "strngj411@gmail.com"
 }
 
-// Actors used to communicate with the remote
-object Test {
-	case class Login(email: String)
-}
-
-class Tester extends Actor {
-	
-	def receive = {
-		case Test.Login(email) => email
-	}
-}
-
 // begin test class
 @RunWith(classOf[JUnitRunner])
 class ApplicationWorkflowTest extends FunSuite with BeforeAndAfter {
 
 	before {
-		
+		// todo
 	}
 
 	test("successful login results in a query returning 'name', 'about', 'friends'") {
 		new Workflow(ApplicationWorkflowConst.EMAIL)
-	}
-}
-
-class Workflow(email: String) extends Actor {
-
-	override def preStart():Unit = {
-		val tester = context.actorOf(Props[Tester], "tester")
-
-		tester ! Test.Login
 	}
 }

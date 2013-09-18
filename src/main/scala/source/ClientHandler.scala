@@ -7,26 +7,30 @@ import chatclient.sink.Remote
 
 import xml._
 
-object MessageHandler {
-	/* =+= actor case-classes =+= */
+object Client {
+
 	case class Confirm(profile: Elem)
-	case class Auth(email: String)
+	case class Login(email: String)
 }
 
 // send/receive messages to/form remote actor
 class Client extends Actor {
-	
-	val remote =
-		context.actorSelection("akka.tcp://127.0.0.1:8080/ChatClient")
+
+	val pack = context.actorOf(Props[Package], "package.source.chatclient")
+	val remote = context.actorSelection("akka.tcp://127.0.0.1:8080/ChatClient")
 
 	// listen for incoming messages from the Client UI
 	def receive = {
 		
-		case MessageHandler.Auth(email) => {
-			remote ! Remote.Validate(email)
+		case Client.Login(email) => {
+
+			pack ! Package.Login(email)
 		}
-		case MessageHandler.Confirm(profile) => {
+		
+		case Client.Confirm(profile) => {
 			println("confirm : " + profile)
 		}
+
+		case _ => // unknown response
 	}
 }

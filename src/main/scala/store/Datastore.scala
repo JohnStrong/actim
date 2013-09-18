@@ -10,6 +10,17 @@ trait Datastore {
 	def getOne(s: String):Option[DBObject]
 
 	def getAll():List[DBObject]
+
+	def insert(entry:DBObject):Unit
+
+	// add entry to a colleciton
+	def update(entry:DBObject):Unit
+
+	// delete entry in a collection
+	def remove(entry:DBObject):Unit
+
+	// drop collection
+	def drop():Unit
 }
 
 // handle client queries to datastore
@@ -27,8 +38,24 @@ class ClientStore extends Datastore {
 
 	// get all clients
 	override def getAll():List[DBObject] = {
-		// TODO
-		List()
+		clients.find().asInstanceOf[List[DBObject]]
+	}
+
+	override def insert(e:DBObject):Unit = {
+		clients.insert(e)
+	}
+
+	// add a new client to the collection
+	override def update(e:DBObject):Unit = {
+		clients.save(e)
+	}
+
+	override def remove(e:DBObject):Unit = {
+		clients.remove(e)
+	}
+
+	override def drop():Unit = {
+		clients.drop()
 	}
 }
 
@@ -38,14 +65,32 @@ class MessageStore(email: String) extends Datastore {
 	private val messages = DB("messages")
 
 	// get the most recent message from a client e to this client instance 
-	override def getOne(e: String):Option[DBObject] = {
-		//TODO
-		None
+	override def getOne(message: String):Option[DBObject] = {
+		messages.findOne("mid" $eq message) match {
+			case Some(x) => Some(x)
+			case _ => None
+		}
 	}
 
 	// get All messages
 	override def getAll():List[DBObject] = {
-		//TODO
-		List()
+		messages.find("to" $eq email).asInstanceOf[List[DBObject]]
+	}
+
+	// add a new message to the collection
+	override def insert(e:DBObject):Unit = {
+		messages.insert(e)
+	}
+
+	override def update(e:DBObject):Unit = {
+		messages.save(e)
+	}
+
+	override def remove(e:DBObject):Unit = {
+		messages.remove(e)
+	}
+
+	override def drop():Unit = {
+		messages.drop()
 	}
 }

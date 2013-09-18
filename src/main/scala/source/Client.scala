@@ -3,18 +3,20 @@ package chatclient.source
 import swing._
 import swing.event._
 
+import akka.actor.Actor
+import akka.actor.ActorSystem
+import akka.actor.Props
+
 object ClientInterface extends SimpleSwingApplication{
+
 	// handle raw messages to the client message handler
-	// private val messgaeHandle = new ClientMessageHandler
+	val system = ActorSystem("Client")
+	val clientActor = system.actorOf(Props[Client], "clientHandler.source.chatclient")
 
 	// Swing initalizer
 	def top = mainFrame(500, 500)
 
-	/*******************************************
-	* 
-	* Private classes to build the User Interface
-	*
-	********************************************/
+	// build the user interface
 	private def mainFrame(w:Int, h:Int):Frame = {
 		new MainFrame {
 			title = "Scala Instant Messenger"
@@ -23,7 +25,7 @@ object ClientInterface extends SimpleSwingApplication{
 					text = "login"
 					reactions += {
 						case ButtonClicked(_) => {
-							
+							clientActor ! Client.Login("strngj411@gmail.com")
 						}
 					}
 				}
