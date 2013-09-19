@@ -30,6 +30,8 @@ object RemoteLookup {
 		def receive = {
 
 			case ActorIdentity(`path`, Some(actor)) => 
+				println("actor identified")
+				
 				context.setReceiveTimeout(Duration.Undefined)
 				context.become(active(actor))
 			case ActorIdentity(`path`, None) => println("Remote actor not availible")
@@ -41,6 +43,7 @@ object RemoteLookup {
 			// listen for incoming messages from the Client UI
 
 			case Login(email) => {
+				println(email)
 				// todo
 			}
 			

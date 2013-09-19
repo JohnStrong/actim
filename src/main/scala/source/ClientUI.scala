@@ -37,6 +37,7 @@ object ClientInterface extends SimpleSwingApplication{
 					reactions += {
 						case ButtonClicked(_) => {
 							// todo
+							client.login("strngj411@gmail.com")
 						}
 					}
 				}
