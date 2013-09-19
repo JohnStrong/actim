@@ -13,6 +13,8 @@ object Remote {
 		import chatclient.source.Client
 		import chatclient.store.{ClientStore, MessageStore, ClientEntity}
 
+		import ClientEntity._
+		
 		// start client entity actor
 		val clientEntity = context.actorOf(Props(new ClientEntity(
 			new ClientStore())), name="cliententity.store.chatclient")

@@ -3,19 +3,21 @@ package chatclient.source
 import akka.actor.Actor
 import akka.actor.Props
 
-import xml._
-
 object Package {
-	case class Login(email: String)
-}
-
-class Package extends Actor {
 	
-	def receive = {
+	case class PackageLogin(email: String)
 
-		case Package.Login(email) => {
-			sender ! <client><login>{email}</login></client>
+	class Package extends Actor {
+
+		import xml._
+		
+		def receive = {
+
+			// package a login request from the client
+			case PackageLogin(email) => {
+				sender ! Client.PackagedLogin(<client><login>{email}</login></client>)
+			}
 		}
-	}
 	
+	}
 }

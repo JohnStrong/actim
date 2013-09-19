@@ -5,10 +5,12 @@ import akka.actor.ActorSystem
 import akka.actor.Props
 
 object Server {
+	
+	import Remote._
 
 	// entry point for the remote
 	def main(args: Array[String]) {
-		val system = ActorSystem("ChatClient")
-		val remote = system.actorOf(Props[Remote], "remote.sink.chatclient")
+		val system = ActorSystem("RemoteSystem")
+		val remote = system.actorOf(Props[Remote], name = "remote.sink.chatclient")
 	}
 }

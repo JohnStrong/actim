@@ -6,36 +6,36 @@ import akka.actor.Props
 
 import com.mongodb.casbah.Imports._
 
-import xml._
-
 object ClientEntity {
 	case object All
 	case class One(email: String)
-}
 
-// wrapper class for calls the datastore object
-class ClientEntity extends Actor {
-	
-	val pack = context.actorOf(Props[Package], "package.store.chatclient")
-	val datastore = new ClientStore
-
-	def receive = {
+	// wrapper class for calls the datastore object
+	class ClientEntity(datastore:Datastore) extends Actor {
 		
-		case ClientEntity.All => {
-			datastore.getAll()
-		}
+		import RemotePackage._
 
-		// find client information to build profile view
-		case ClientEntity.One(email) => {
+		val pack = context.actorOf(Props[RemotePackage], "package.store.chatclient")
 
-			datastore.getOne(email) match {
+		def receive = {
+			
+			case All => {
+				datastore.getAll()
+			}
 
-				case Some(x) => {
-					pack ! Package.Client(x)
+			// find client information to build profile view
+			case One(email) => {
+
+				datastore.getOne(email) match {
+
+					case Some(x) => {
+						pack ! Client(x)
+					}
+
+					case _ => // handle error
 				}
-
-				case _ => // handle error
 			}
 		}
 	}
 }
+

@@ -1,45 +1,44 @@
 package chatclient.source
 
-import swing._
-import swing.event._
 
 import akka.actor.Actor
-import akka.actor.ActorSystem
 import akka.actor.Props
 
-object ClientInterface extends SimpleSwingApplication{
+object Client {
 
-	// handle raw messages to the client message handler
-	val system = ActorSystem("Client")
-	val clientActor = system.actorOf(Props[Client], "clientHandler.source.chatclient")
+	case class Confirm(profile: xml.Elem)
+	case class Login(email: String)
+	case class PackagedLogin(elem: xml.Elem)
 
-	// Swing initalizer
-	def top = mainFrame(500, 500)
+	// send/receive messages to/form remote actor
+	class Client extends Actor {
 
-	// build the user interface
-	private def mainFrame(w:Int, h:Int):Frame = {
-		new MainFrame {
-			title = "Scala Instant Messenger"
-			contents = new GridPanel(2,2) {
-				contents += new Button {
-					text = "login"
-					reactions += {
-						case ButtonClicked(_) => {
-							clientActor ! Client.Login("strngj411@gmail.com")
-						}
-					}
-				}
-				contents += new Button {
-					text = "friends"
-					reactions += {
-						case ButtonClicked(_) => {
-							
-						}
-					}
-				}
+		import chatclient.sink.Remote._
+		import Package._
+
+		// start package actor
+		val pack = context.actorOf(Props[Package], "package.source.chatclient")
+
+		// get a handle to the remote actor
+		val remote = context.actorSelection("akka.tcp://RemoteSystem@127.0.0.1:8080/remote.sink.chatclient")
+
+		// listen for incoming messages from the Client UI
+		def receive = {
+			
+			case Login(email) => {
+				pack ! PackageLogin(email)
+			}
+			
+			case PackagedLogin(elem) => {
+				println(elem)
+				remote ! Retrieve(elem)
 			}
 
-			size = new Dimension(w, h)
+			case Confirm(profile) => {
+				println("confirm : " + profile)
+			}
+
+			case _ => println("unknown")
 		}
 	}
 }
