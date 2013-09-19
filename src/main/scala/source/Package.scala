@@ -10,12 +10,13 @@ object Package {
 	class Package extends Actor {
 
 		import xml._
+		import RemoteLookup._
 		
 		def receive = {
 
 			// package a login request from the client
 			case PackageLogin(email) => {
-				sender ! Client.PackagedLogin(<client><login>{email}</login></client>)
+				// sender ! Client.PackagedLogin(<client><login>{email}</login></client>)
 			}
 		}
 	

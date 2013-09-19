@@ -1,7 +1,6 @@
 package chatclient.sink
 
-import akka.actor.Actor
-import akka.actor.Props
+import akka.actor.{ Actor, Props }
 
 object Remote {
 	// authentication/get profile data
