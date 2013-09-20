@@ -17,9 +17,9 @@ object RemoteLookup {
 		import chatclient.sink.Remote._
 
 		// start package actor
-		val pack = context.actorOf(Props[Package], "chatclient.source.chatclient")
+		val pack = context.actorOf(Props[Package], name = "package.source.chatclient")
 
-		context.setReceiveTimeout(3.seconds)
+		context.setReceiveTimeout(5.seconds)
 		sendIdentifyRequest()
 
 		// get a handle to the remote actor
@@ -29,14 +29,24 @@ object RemoteLookup {
 
 		def receive = {
 
-			case ActorIdentity(`path`, Some(actor)) => 
+			case ActorIdentity(`path`, Some(actor)) => {
 				println("actor identified")
-				
+
 				context.setReceiveTimeout(Duration.Undefined)
 				context.become(active(actor))
-			case ActorIdentity(`path`, None) => println("Remote actor not availible")
-			case ReceiveTimeout => sendIdentifyRequest()
-			case _ => println("Not ready yet")
+			}
+
+			case ActorIdentity(`path`, None) => {
+				println("Remote actor not availible")
+			}
+
+			case ReceiveTimeout => {
+				sendIdentifyRequest()
+			}
+
+			case _ => {
+				println("Not ready yet")
+			}
 		}
 
 		def active(client: ActorRef): Actor.Receive = {

@@ -1,5 +1,7 @@
 package chatclient.source
 
+import com.typesafe.config.ConfigFactory
+
 import akka.actor.Actor
 import akka.actor.ActorSystem
 import akka.actor.Props
@@ -10,17 +12,18 @@ object Client {
 	class Client {
 
 		import chatclient.sink.Remote._
-		import RemoteLookup._
+		import RemoteHandler._
 
-		val PATH = "akka.tcp://RemoteSystem@127.0.0.1:8080/User1-PC/remote.sink.chatclient"
+		val PATH = "akka.tcp://RemoteSystem@127.0.0.1:8080/user/remote.sink.chatclient"
 
 		// start connection remote actor through remote lookup class
 		val system = ActorSystem("ClientSystem")
-		val actor = system.actorOf(Props(classOf[RemoteLookup], PATH), "chatclient.source.remoteLookup")
+		val remoteActor = system.actorOf(Props[Remote], name = "remoteSink")
+		val clientActor = system.actorOf(Props(classOf[RemoteHandler], remoteActor), name = "creationActor")
 
 		// handle ui events
 		def login(email:String):Unit = {
-			actor ! Login(email)
+			clientActor ! Login(email)
 		}
 	}
 }

@@ -11,7 +11,6 @@ object Server {
 	// entry point for the remote
 	def main(args: Array[String]) {
 		
-		val system = ActorSystem("RemoteSystem")
-		val remote = system.actorOf(Props[Remote], name = "remote.sink.chatclient")
+		val system = ActorSystem("remoteSystem")
 	}
 }

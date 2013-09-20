@@ -9,9 +9,7 @@ object Remote {
 
 	class Remote extends Actor {
 
-		import chatclient.source.Client
 		import chatclient.store.{ClientStore, MessageStore, ClientEntity}
-
 		import ClientEntity._
 		
 		// start client entity actor
@@ -23,11 +21,14 @@ object Remote {
 
 			// if successful return profile details
 			case Retrieve(message) => {
-				println(message)
 				// clientEntity ! ClientEntity.One("")
 			}
 
-			case Done(x) => context.stop(self)
+			case Done(x) => {
+				context.stop(self)
+			}
+
+			case _ => println("unrecognised message")
 		}
 	}
 }
