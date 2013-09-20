@@ -5,6 +5,10 @@ import swing.event._
 
 import Client._
 
+/**
+* This object creates the UI that a cient will interact with
+* UI events will be passed to the backend as messages to be processed and evaluated
+**/
 object ClientInterface extends SimpleSwingApplication{
 
 	// handle raw messages to the client message handler
@@ -25,7 +29,7 @@ object ClientInterface extends SimpleSwingApplication{
 
 					reactions += {
 						case e:KeyTyped => {
-							println(e)
+							//todo
 						}
 					}
 				}

@@ -3,6 +3,10 @@ package chatclient.source
 import akka.actor.Actor
 import akka.actor.Props
 
+/**
+* The purpose of this class is to take in raw information about an event and package it into a 
+* format expected by the remote actor
+**/
 object Package {
 	
 	case class PackageLogin(email: String)
@@ -14,7 +18,7 @@ object Package {
 		
 		def receive = {
 
-			// package a login request from the client
+			// package a login request from a client
 			case PackageLogin(email) => {
 				sender ! PackagedLogin(<client><login>{email}</login></client>)
 			}

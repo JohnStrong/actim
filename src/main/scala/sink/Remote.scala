@@ -3,10 +3,13 @@ package chatclient.sink
 import akka.actor.{ Actor, Props }
 
 object Remote {
-	// authentication/get profile data
+
 	case class Retrieve(message:xml.Elem)
 	case class Done(status:String)
 
+	/**
+	* Remote Actor that handles incoming messages from any client and responds with an xml message
+	**/
 	class Remote extends Actor {
 
 		import chatclient.store.{ClientStore, MessageStore, ClientEntity}
@@ -21,7 +24,7 @@ object Remote {
 
 			// if successful return profile details
 			case Retrieve(message) => {
-				// clientEntity ! ClientEntity.One("")
+				//todo
 			}
 
 			case Done(x) => {

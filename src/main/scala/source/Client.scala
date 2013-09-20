@@ -8,7 +8,9 @@ import akka.actor.Props
 
 object Client {
 
-	// send/receive messages to/form remote actor
+	/**
+	* handle UI events and pass them on to the RemoteHandler Actor for processing
+	**/
 	class Client {
 
 		import chatclient.sink.Remote._
@@ -19,7 +21,9 @@ object Client {
 		// start connection remote actor through remote lookup class
 		val system = ActorSystem("ClientSystem")
 		val remoteActor = system.actorOf(Props[Remote], name = "remoteSink")
-		val clientActor = system.actorOf(Props(classOf[RemoteHandler], remoteActor), name = "creationActor")
+
+		val clientActor = system.actorOf(Props(classOf[RemoteHandler], 
+			remoteActor), name = "creationActor")
 
 		// handle ui events
 		def login(email:String):Unit = {
