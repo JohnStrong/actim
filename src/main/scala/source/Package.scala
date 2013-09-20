@@ -10,7 +10,7 @@ import akka.actor.Props
 object Package {
 	
 	case class PackageLogin(email: String)
-
+	
 	class Package extends Actor {
 
 		import xml._
@@ -20,7 +20,7 @@ object Package {
 
 			// package a login request from a client
 			case PackageLogin(email) => {
-				sender ! PackagedLogin(<client><login>{email}</login></client>)
+				sender ! Packaged(<client><login>{email}</login></client>)
 			}
 		}
 	

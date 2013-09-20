@@ -5,7 +5,7 @@ import akka.actor.{ActorRef, ActorSystem, Actor, Props}
 object RemoteHandler {
 
 	case class Login(email: String)
-	case class PackagedLogin(elem: xml.Elem)
+	case class Packaged(elem: xml.Elem)
 	case class Confirm(details: xml.Elem)
 
 	/**
@@ -26,13 +26,15 @@ object RemoteHandler {
 				pack ! PackageLogin(email)
 			}
 
-			case PackagedLogin(elem) => {
+			case Packaged(elem) => {
 				remoteActor ! Retrieve(elem)
 			}
 
 			case Confirm(details) => {
 				//todo
 			}
+
+			case _ => println("unknown messege")
 		}
 	}
 }
