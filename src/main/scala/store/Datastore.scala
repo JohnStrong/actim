@@ -37,26 +37,18 @@ class ClientStore extends Datastore {
 	}
 
 	// get all clients
-	override def getAll():List[DBObject] = {
+	override def getAll():List[DBObject] =
 		clients.find().asInstanceOf[List[DBObject]]
-	}
 
-	override def insert(e:DBObject):Unit = {
-		clients.insert(e)
-	}
+	override def insert(e:DBObject):Unit = clients.insert(e)
 
 	// add a new client to the collection
-	override def update(e:DBObject):Unit = {
-		clients.save(e)
-	}
+	override def update(e:DBObject):Unit = clients.save(e)
 
-	override def remove(e:DBObject):Unit = {
-		clients.remove(e)
-	}
+	override def remove(e:DBObject):Unit = clients.remove(e)
 
-	override def drop():Unit = {
-		clients.drop()
-	}
+	override def drop():Unit = clients.drop()
+
 }
 
 // handle message queries to datastore
@@ -73,24 +65,16 @@ class MessageStore(email: String) extends Datastore {
 	}
 
 	// get All messages
-	override def getAll():List[DBObject] = {
+	override def getAll():List[DBObject] = 
 		messages.find("to" $eq email).asInstanceOf[List[DBObject]]
-	}
 
 	// add a new message to the collection
-	override def insert(e:DBObject):Unit = {
-		messages.insert(e)
-	}
+	override def insert(e:DBObject):Unit = messages.insert(e)
 
-	override def update(e:DBObject):Unit = {
-		messages.save(e)
-	}
+	override def update(e:DBObject):Unit = messages.save(e)
 
-	override def remove(e:DBObject):Unit = {
-		messages.remove(e)
-	}
+	override def remove(e:DBObject):Unit = messages.remove(e)
 
-	override def drop():Unit = {
-		messages.drop()
-	}
+	override def drop():Unit = messages.drop()
+
 }

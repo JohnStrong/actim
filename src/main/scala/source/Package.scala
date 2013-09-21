@@ -19,9 +19,8 @@ object Package {
 		def receive = {
 
 			// package a login request from a client
-			case PackageLogin(email) => {
+			case PackageLogin(email) => 
 				sender ! Packaged(<client><login>{email}</login></client>)
-			}
 		}
 	
 	}

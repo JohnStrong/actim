@@ -15,7 +15,7 @@ object Remote {
 		import chatclient.store.{ClientStore, MessageStore, ClientEntity}
 		import ClientEntity._
 		
-		val clientStore = new ClientStore()
+		val clientStore = new ClientStore
 
 		// start client entity actor
 		val clientEntity = context.actorOf(Props(classOf[ClientEntity], 
@@ -25,14 +25,8 @@ object Remote {
 		def receive = {
 
 			// if successful return profile details
-			case Retrieve(message) => {
-				//todo: parse xml to deduce apropriate action
-			}
-
-			case Done(x) => {
-				context.stop(self)
-			}
-
+			case Retrieve(message) => //todo: parse xml to deduce apropriate action
+			case Done(x) => context.stop(self)
 			case _ => println("unrecognised message")
 		}
 	}

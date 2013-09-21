@@ -22,18 +22,9 @@ object RemoteHandler {
 
 		def receive = {
 
-			case Login(email) => {
-				pack ! PackageLogin(email)
-			}
-
-			case Packaged(elem) => {
-				remoteActor ! Retrieve(elem)
-			}
-
-			case Confirm(details) => {
-				//todo
-			}
-
+			case Login(email) => pack ! PackageLogin(email)
+			case Packaged(elem) => remoteActor ! Retrieve(elem)
+			case Confirm(details) => //todo
 			case _ => println("unknown messege")
 		}
 	}

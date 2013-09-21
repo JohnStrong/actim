@@ -18,7 +18,7 @@ object ClientInterface extends SimpleSwingApplication{
 	def top = mainFrame(420, 120)
 
 	// build the user interface
-	def mainFrame(w:Int, h:Int):Frame = {
+	private def mainFrame(w:Int, h:Int):Frame = {
 		new MainFrame {
 			title = "Scala Instant Messenger"
 			contents = new FlowPanel {

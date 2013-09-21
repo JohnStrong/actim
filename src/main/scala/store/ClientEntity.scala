@@ -7,6 +7,7 @@ import akka.actor.Props
 import com.mongodb.casbah.Imports._
 
 object ClientEntity {
+
 	case object All
 	case class One(email: String)
 
@@ -19,11 +20,7 @@ object ClientEntity {
 
 		def receive = {
 			
-			case All => {
-				datastore.getAll()
-			}
-
-			// find client information to build profile view
+			case All => datastore.getAll()
 			case One(email) => {
 
 				datastore.getOne(email) match {
