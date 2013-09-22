@@ -16,14 +16,14 @@ object Client {
 		import chatclient.sink.Interceptor._
 		import Distributer._
 
-		val path = "akka.tcp://remoteSystem@127.0.0.1:2552/actim"
-
 		// start connection remote actor through remote lookup class
-		val system = ActorSystem("clientsystem", ConfigFactory.load.getConfig("clientsystem"))
-		val clientActor = system.actorOf(Props(classOf[Distributer], 
-			path), "creationActor")
+		val system = ActorSystem("clientsystem", 
+			ConfigFactory.load.getConfig("clientsystem"))
+		val path = "akka.tcp://Actim@127.0.0.1:2552/user/remoteActor"
+		val distributer = system.actorOf(Props(classOf[Distributer], 
+			path), name = "creationActor")
 
 		// handle ui events
-		def login(email:String):Unit = clientActor ! Login(email)
+		def login(email:String):Unit = distributer ! Login(email)
 	}
 }

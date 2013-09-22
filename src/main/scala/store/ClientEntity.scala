@@ -8,10 +8,10 @@ import com.mongodb.casbah.Imports._
 
 object ClientEntity {
 
-	case object All
+	case class All
 	case class One(email: String)
 
-	// wrapper class for calls the datastore object
+	// class that contains methods to perform specific tasks against the datastore
 	class ClientEntity(datastore:Datastore) extends Actor {
 		
 		import RemotePackager._
@@ -20,7 +20,12 @@ object ClientEntity {
 
 		def receive = {
 			
-			case All => datastore.getAll()
+			// TODO
+			case All => {
+				datastore.getAll()
+				"test"
+			}
+
 			case One(email) => {
 
 				datastore.getOne(email) match {

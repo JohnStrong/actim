@@ -15,11 +15,7 @@ object RemotePackager {
 	class RemotePackager extends Actor {
 
 		implicit def as(obj: DBObject) = new As(obj)
-
-		override def preStart():Unit = {
-			// override
-		}
-
+		
 		def receive = {
 			case Client(entity) => {
 				

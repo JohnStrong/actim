@@ -5,9 +5,12 @@ import scala.concurrent.duration._
 
 object Distributer {
 
+	// sends to Packager class the email entered by the client on login
 	case class Login(email: String)
+	// receives a packaged (xml) message
 	case class Packaged(elem: xml.Elem)
-	case class Confirm(details: xml.Elem)
+	// parse user details returned from server for client home page
+	case class Home(details: xml.Elem)
 
 	/**
 	* this class will handle package data from ui events as well as send/receieve 
@@ -19,7 +22,7 @@ object Distributer {
 		import Packager._
 		import chatclient.sink.Interceptor._
 
-		val pack = context.actorOf(Props[Packager], name = "package.source.chatclient")
+		val pack = context.actorOf(Props[Packager], name = "packager")
 		context.setReceiveTimeout(5.seconds)
   		requestIdentity()
 
@@ -41,7 +44,7 @@ object Distributer {
 		def active(actor: ActorRef): Actor.Receive = {
 			case Login(email) => pack ! PackageLogin(email)
 			case Packaged(elem) => actor ! Retrieve(elem)
-			case Confirm(details) => //todo
+			case Home(details) => //todo
 			case _ => println("unknown messege")
 		}
 	}
