@@ -7,14 +7,14 @@ import akka.actor.Props
 * The purpose of this class is to take in raw information about an event and package it into a 
 * format expected by the remote actor
 **/
-object Package {
+object Packager {
 	
 	case class PackageLogin(email: String)
 	
-	class Package extends Actor {
+	class Packager extends Actor {
 
 		import xml._
-		import RemoteHandler._
+		import Distributer._
 		
 		def receive = {
 

@@ -14,9 +14,9 @@ object ClientEntity {
 	// wrapper class for calls the datastore object
 	class ClientEntity(datastore:Datastore) extends Actor {
 		
-		import RemotePackage._
+		import RemotePackager._
 
-		val pack = context.actorOf(Props[RemotePackage], "package.store.chatclient")
+		val pack = context.actorOf(Props[RemotePackager], "package.store.chatclient")
 
 		def receive = {
 			

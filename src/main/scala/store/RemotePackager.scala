@@ -7,11 +7,12 @@ import akka.actor.Props
 import xml._
 import com.mongodb.casbah.Imports._
 
-object RemotePackage {
+object RemotePackager {
+
 	case class Client(entity: DBObject)
 	case class Message(entity: DBObject)
 
-	class RemotePackage extends Actor {
+	class RemotePackager extends Actor {
 
 		implicit def as(obj: DBObject) = new As(obj)
 
@@ -20,7 +21,7 @@ object RemotePackage {
 		}
 
 		def receive = {
-			case RemotePackage.Client(entity) => {
+			case Client(entity) => {
 				
 				// get attributes we are interested in
 				val email = entity string("email")
@@ -38,7 +39,7 @@ object RemotePackage {
 			}	
 
 			// package message columns
-			case RemotePackage.Message(entity) => {
+			case Message(entity) => {
 				
 				<message>test</message>
 

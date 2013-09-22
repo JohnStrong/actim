@@ -7,10 +7,10 @@ import akka.actor.Props
 
 class ServerStartup {
 
-	import Remote._
+	import Interceptor._
 
 	val system = ActorSystem("actim", ConfigFactory.load.getConfig("actim"))
-	val remoteActor = system.actorOf(Props[Remote], "remoteActor")
+	val remoteActor = system.actorOf(Props[Interceptor], "remoteActor")
 }
 
 object Server {

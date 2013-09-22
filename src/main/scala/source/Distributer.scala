@@ -3,7 +3,7 @@ package chatclient.source
 import akka.actor.{ActorRef, Actor, Props, Identify, ActorIdentity, ReceiveTimeout}
 import scala.concurrent.duration._
 
-object RemoteHandler {
+object Distributer {
 
 	case class Login(email: String)
 	case class Packaged(elem: xml.Elem)
@@ -13,13 +13,13 @@ object RemoteHandler {
 	* this class will handle package data from ui events as well as send/receieve 
 	* messages from the remote actor
 	**/
-	class RemoteHandler(path:String) extends Actor {
+	class Distributer(path:String) extends Actor {
 
 		import Client._
-		import Package._
-		import chatclient.sink.Remote._
+		import Packager._
+		import chatclient.sink.Interceptor._
 
-		val pack = context.actorOf(Props[Package], name = "package.source.chatclient")
+		val pack = context.actorOf(Props[Packager], name = "package.source.chatclient")
 		context.setReceiveTimeout(5.seconds)
   		requestIdentity()
 

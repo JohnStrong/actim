@@ -2,7 +2,7 @@ package chatclient.sink
 
 import akka.actor.{ Actor, Props}
 
-object Remote {
+object Interceptor {
 
 	case class Retrieve(message:xml.Elem)
 	case class Done(status:String)
@@ -10,7 +10,7 @@ object Remote {
 	/**
 	* Remote Actor that handles incoming messages from any client and responds with an xml message
 	**/
-	class Remote extends Actor {
+	class Interceptor extends Actor {
 
 		import chatclient.store.{ClientStore, MessageStore, ClientEntity}
 		import ClientEntity._
