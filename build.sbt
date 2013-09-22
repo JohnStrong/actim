@@ -9,7 +9,8 @@ libraryDependencies ++= Seq(
 	"junit" % "junit" % "4.8.1" % "test",
 	"org.scalatest" %% "scalatest" % "1.9.1" % "test",
 	"com.novocode" % "junit-interface" % "0.8" % "test->default",
-	"com.typesafe.akka" % "akka-actor_2.10" % "2.2.1"
+	"com.typesafe.akka" % "akka-actor_2.10" % "2.2.1",
+	"com.typesafe.akka" %% "akka-remote" % "2.2.1"
 )
 
 libraryDependencies <+= scalaVersion { "org.scala-lang" % "scala-swing" % _ }
