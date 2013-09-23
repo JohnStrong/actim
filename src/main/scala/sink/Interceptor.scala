@@ -4,7 +4,10 @@ import akka.actor.{ Actor, Props}
 
 object Interceptor {
 
-	case class Retrieve(message:xml.Elem)
+	case class Account(message:xml.Elem)
+
+	case class Message(message: xml.Elem)
+
 	case class Done(status:String)
 
 	/**
@@ -29,7 +32,8 @@ object Interceptor {
 		def receive = {
 
 			// if successful return profile details
-			case Retrieve(message) => println(message) //todo
+			case Account(login) => println(login) //todo
+			case Message(message) => println(message) //todo
 			case Done(x) => context.stop(self)
 			case _ => println("unrecognised message")
 		}

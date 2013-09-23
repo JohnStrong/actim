@@ -7,8 +7,15 @@ object Distributer {
 
 	// sends to Packager class the email entered by the client on login
 	case class Login(email: String)
-	// receives a packaged (xml) message
-	case class Packaged(elem: xml.Elem)
+
+	case class SendMessage(to: String, from: String, body: String)
+
+	// receives a packaged (xml) message for a login
+	case class PLogin(elem: xml.Elem)
+
+	// receives a packaged (xml) message for messages
+	case class PMessage(elem: xml.Elem)
+
 	// parse user details returned from server for client home page
 	case class Home(details: xml.Elem)
 
@@ -42,8 +49,16 @@ object Distributer {
 
 		// send an receive messages to/from remote
 		def active(actor: ActorRef): Actor.Receive = {
+
+			// unpackaged messages
 			case Login(email) => pack ! PackageLogin(email)
-			case Packaged(elem) => actor ! Retrieve(elem)
+			case SendMessage(to, from, body) => pack ! PackageMessage(to, from, body)
+
+			// packaged messages
+			case PLogin(elem) => actor ! Account(elem)
+			case PMessage(elem) => actor ! Message(elem)
+
+			// response messages
 			case Home(details) => //todo
 			case _ => println("unknown messege")
 		}

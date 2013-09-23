@@ -9,7 +9,11 @@ import akka.actor.Props
 **/
 object Packager {
 	
+	// package in xml a client login
 	case class PackageLogin(email: String)
+	
+	// package in xml a message send by the client
+	case class PackageMessage(to: String, from: String, body: String)
 	
 	class Packager extends Actor {
 
@@ -18,9 +22,21 @@ object Packager {
 		
 		def receive = {
 
-			// package a login request from a client
 			case PackageLogin(email) => 
-				sender ! Packaged(<client><login>{email}</login></client>)
+				sender ! PLogin(<client><login>{email}</login></client>)
+
+			case PackageMessage(to, from, body) => {
+				sender ! PMessage(
+					<client>
+						<message>
+							<to>{to}</to>
+							<from>{from}</from>
+							<body>{body}</body>
+						</message>
+					</client>
+				)
+			}
+
 		}
 	
 	}
