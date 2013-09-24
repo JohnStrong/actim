@@ -29,6 +29,7 @@ object Interceptor {
 
 		// retrieve all accounts in datastore
 		def allAccounts() {
+			// todo
 			val users = clientEntity ! All()
 			println(users)
 		}
@@ -37,9 +38,9 @@ object Interceptor {
 		def receive = {
 
 			// if successful return profile details
-			case Account(login) =>{ 
-				login \ "login" match {
-					case <login>{email}</login> => println(email)
+			case Account(login) => { 
+				login match {
+					case <client><login>{email}</login></client> => println(email)
 					case _ => println("unrecognised message")
 				}
 			}
