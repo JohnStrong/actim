@@ -14,9 +14,12 @@ object RemotePackager {
 
 	class RemotePackager extends Actor {
 
+		import ClientEntity._
+
 		implicit def as(obj: DBObject) = new As(obj)
 		
 		def receive = {
+
 			case Client(entity) => {
 				
 				// get attributes we are interested in
@@ -29,9 +32,6 @@ object RemotePackager {
 					<name>{name}</name>
 					<about>{about}</about>
 				</client>
-
-				// return to sender
-
 			}	
 
 			// package message columns

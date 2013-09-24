@@ -7,9 +7,7 @@ trait Datastore {
 	// open chat client datastore
 	protected val DB = MongoClient()("instant_messenger")
 
-	def getOne(s: String):Option[DBObject]
-
-	def getAll():List[DBObject]
+	def find():Iterator[DBObject]
 
 	def insert(entry:DBObject):Unit
 
@@ -28,17 +26,8 @@ class ClientStore extends Datastore {
 
 	private val clients = DB("clients")
 
-	// get one client with details
-	override def getOne(email: String):Option[DBObject] = {
-		clients.findOne("email" $eq email) match {
-			case Some(x) => Some(x)
-			case _ => None
-		}
-	}
-
-	// get all clients
-	override def getAll():List[DBObject] =
-		clients.find().asInstanceOf[List[DBObject]]
+	
+	override def find():Iterator[DBObject] = clients.find()
 
 	override def insert(e:DBObject):Unit = clients.insert(e)
 
@@ -56,17 +45,7 @@ class MessageStore(email: String) extends Datastore {
 
 	private val messages = DB("messages")
 
-	// get the most recent message from a client e to this client instance 
-	override def getOne(message: String):Option[DBObject] = {
-		messages.findOne("mid" $eq message) match {
-			case Some(x) => Some(x)
-			case _ => None
-		}
-	}
-
-	// get All messages
-	override def getAll():List[DBObject] = 
-		messages.find("to" $eq email).asInstanceOf[List[DBObject]]
+	override def find():Iterator[DBObject] = messages.find()
 
 	// add a new message to the collection
 	override def insert(e:DBObject):Unit = messages.insert(e)

@@ -9,7 +9,8 @@ import com.mongodb.casbah.Imports._
 object ClientEntity {
 
 	case class All
-	case class One(email: String)
+	
+	case class PackagedClients(elem: xml.Elem)
 
 	// class that contains methods to perform specific tasks against the datastore
 	class ClientEntity(datastore:Datastore) extends Actor {
@@ -20,23 +21,13 @@ object ClientEntity {
 
 		def receive = {
 			
-			// TODO
 			case All => {
-				datastore.getAll()
-				"test"
+				datastore.find().map(x => {
+					pack ! Client(x)
+				})
 			}
 
-			case One(email) => {
-
-				datastore.getOne(email) match {
-
-					case Some(x) => {
-						pack ! Client(x)
-					}
-
-					case _ => // handle error
-				}
-			}
+			case PackagedClients(x) => //todo (returns clients to sender)
 		}
 	}
 }
