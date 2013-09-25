@@ -9,25 +9,20 @@ import com.mongodb.casbah.Imports._
 object ClientEntity {
 
 	case class All
-	
-	case class PackagedClients(elem: xml.Elem)
 
 	// class that contains methods to perform specific tasks against the datastore
 	class ClientEntity(datastore:Datastore) extends Actor {
 		
 		import RemotePackager._
+		import chatclient.sink.Interceptor._
 
 		val pack = context.actorOf(Props[RemotePackager], "package.store.chatclient")
 
 		def receive = {
 			
 			case All => {
-				datastore.find().map(x => {
-					pack ! Client(x)
-				})
+				sender ! Clients(datastore.find())
 			}
-
-			case PackagedClients(x) => //todo (returns clients to sender)
 		}
 	}
 }

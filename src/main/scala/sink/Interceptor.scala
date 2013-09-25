@@ -2,12 +2,13 @@ package chatclient.sink
 
 import akka.actor.{ Actor, Props, ActorRef}
 import xml._
+
 import com.mongodb.casbah.Imports._
 
 object Interceptor {
 
 	// store messages
-	case class Clients(list: List[DBObject])
+	case class Clients(list: Iterator[DBObject])
 
 	// client interceptor messages
 	case class Account(message: Elem)
@@ -43,12 +44,13 @@ object Interceptor {
 
 		// handles messages from clients
 		def action(actor: ActorRef, clients: List[DBObject]): Actor.Receive = {
+
 			case Account(login) => { 
-					login match {
-						case <client><login>{email}</login></client> => println(email)
-						case _ => println("unrecognised message from client")
-					}
+				login match {
+					case <client><login>{email}</login></client> => println(email)
+					case _ => println("unrecognised message from client")
 				}
+			}
 
 			case Message(message) => println(message \\ "to"); println(message \\ "from") //todo
 			case Done(x) => context.stop(self)
