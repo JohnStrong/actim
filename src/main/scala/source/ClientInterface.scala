@@ -3,8 +3,6 @@ package chatclient.source
 import swing._
 import swing.event._
 
-import Client._
-
 /**
 * This object creates the UI that a cient will interact with
 * UI events will be passed to the backend as messages to be processed and evaluated
@@ -41,7 +39,7 @@ object ClientInterface extends SimpleSwingApplication{
 					reactions += {
 						case ButtonClicked(_) => {
 							// todo
-							client.login("strngj411@gmail.com")
+							client.login("j.strong1@nuigalway.ie")
 						}
 					}
 				}

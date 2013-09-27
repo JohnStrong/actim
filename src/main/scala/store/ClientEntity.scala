@@ -5,25 +5,36 @@ import akka.actor.Actor._
 import akka.actor.Props
 
 import com.mongodb.casbah.Imports._
-
 object ClientEntity {
-
 	case class All
+	case class Client(email:String, name:String, about:String, friends:List[String])
+}
 
-	// class that contains methods to perform specific tasks against the datastore
-	class ClientEntity(datastore:Datastore) extends Actor {
+// class that contains methods to perform specific tasks against the datastore
+class ClientEntity(datastore:Datastore) extends Actor {
+	
+	import chatclient.sink.Interceptor._
+	import ClientEntity._
+
+	val pack = new RemotePackager
+
+	def receive = {
+
+		case All =>
+			sender ! datastore.find().map(x => parseClient(x))
+		case _ => println("unrecognised message")
+	}
+
+	private def parseClient(obj:DBObject):Client = {
+
+		implicit def as(obj:DBObject) = new As(obj)
 		
-		import RemotePackager._
-		import chatclient.sink.Interceptor._
-
-		val pack = context.actorOf(Props[RemotePackager], "package.store.chatclient")
-
-		def receive = {
-			
-			case All => {
-				sender ! Clients(datastore.find())
-			}
-		}
+		Client(
+			obj string("email"), 
+			obj string("name"),
+			obj string("about"), 
+			obj list("friends")
+		)
 	}
 }
 

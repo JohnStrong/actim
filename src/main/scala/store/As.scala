@@ -16,7 +16,7 @@ class As(obj: DBObject) {
 
 	// return field from mongo collection as a list
 	def list(field: String):List[String] = 
-		(List() ++ obj(field).asInstanceOf[BasicDBList]) map {
+		List() ++ (obj.get(field).asInstanceOf[BasicDBList]) map {
 				_.asInstanceOf[Any].asInstanceOf[DBObject]
 					.getOrElse("email", throw new Exception("query list exception")).asInstanceOf[String]
 		}

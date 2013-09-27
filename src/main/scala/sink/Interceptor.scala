@@ -1,60 +1,57 @@
 package chatclient.sink
 
+
+import scala.concurrent.Await
+
 import akka.actor.{ Actor, Props, ActorRef}
+import akka.pattern.ask
+import akka.util.Timeout
+import scala.concurrent.duration._
+
 import xml._
 
 import com.mongodb.casbah.Imports._
 
 object Interceptor {
 
-	// store messages
-	case class Clients(list: Iterator[DBObject])
-
 	// client interceptor messages
 	case class Account(message: Elem)
 	case class Message(message: Elem)
 	case class Done(status: String)
+}
+/**
+* Remote Actor that handles incoming messages from any client and responds with an xml message
+**/
+class Interceptor extends Actor {
 
-	/**
-	* Remote Actor that handles incoming messages from any client and responds with an xml message
-	**/
-	class Interceptor extends Actor {
+	import chatclient.store.{ClientStore, MessageStore, ClientEntity}
+	import Interceptor._
+	import ClientEntity._
+	
+	// start client entity actor
+	val clientStore = new ClientStore
+	val clientEntity = context.actorOf(Props(classOf[ClientEntity], 
+		clientStore), name = "clientEntity")
 
-		import chatclient.store.{ClientStore, MessageStore, ClientEntity}
-		import ClientEntity._
-		
-		// start client entity actor
-		val clientStore = new ClientStore
-		val clientEntity = context.actorOf(Props(classOf[ClientEntity], 
-			clientStore), name = "cliententity.store.chatclient")
+	// all client accounts
+	val clients = allAccounts()
 
-		// all client accounts
-		allAccounts()
+	def allAccounts():Iterator[Client] = {
+		implicit val timeout = Timeout(5 seconds)
+		Await.result(clientEntity ? All, timeout.duration).asInstanceOf[Iterator[Client]]
+	}
 
-		def allAccounts() {
-			clientEntity ! All
+	// listen for messages
+	def receive = {
+
+		case Account(login) => {
+			clients foreach(client => client match {
+				case Client(login, _, _, _) => println("success")
+				case _ => println("failure")
+			})
 		}
-
-		// listen for messages
-		def receive = {
-
-			case Clients(x) => context.become(action(self, x))
-			case _ => println("unrecognised message from store")
-		}
-
-		// handles messages from clients
-		def action(actor: ActorRef, clients: List[DBObject]): Actor.Receive = {
-
-			case Account(login) => { 
-				login match {
-					case <client><login>{email}</login></client> => println(email)
-					case _ => println("unrecognised message from client")
-				}
-			}
-
-			case Message(message) => println(message \\ "to"); println(message \\ "from") //todo
-			case Done(x) => context.stop(self)
-			case _ => println("unrecognised message")
-		}
+		case Message(message) => println(message \\ "to"); println(message \\ "from") //todo
+		case Done(x) => context.stop(self)
+		case _ => println("unrecognised message")
 	}
 }
