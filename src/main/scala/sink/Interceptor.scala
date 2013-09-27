@@ -44,14 +44,30 @@ class Interceptor extends Actor {
 	// listen for messages
 	def receive = {
 
-		case Account(login) => {
-			clients foreach(client => client match {
-				case Client(login, _, _, _) => println("success")
-				case _ => println("failure")
-			})
+		case Account(credentials) => {
+
+			val email = credentials \\ "login"
+			val userInstance:Option[Client] = findClient(clients, "j.strong1@nuigalway.ie")
+
+			//todo: return xml message of userInstance parameter values
 		}
 		case Message(message) => println(message \\ "to"); println(message \\ "from") //todo
 		case Done(x) => context.stop(self)
 		case _ => println("unrecognised message")
+	}
+
+	private def findClient(clients:Iterator[Client], target:String):Option[Client] = {
+		
+		var user:Option[Client] = None
+
+		clients foreach(client =>
+			client match {
+				case c:Client if c.email == "j.strong1@nuigalway.ie" => 
+					user = Some(c)
+				case _ => None
+			}
+		)
+
+		user
 	}
 }
