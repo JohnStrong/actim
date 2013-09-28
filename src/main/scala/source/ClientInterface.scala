@@ -23,7 +23,7 @@ object ClientInterface extends SimpleSwingApplication{
 				contents += new TextField {
 					
 					editable = true
-					text = "example@gmail.com"
+					text = "john_doe@example.com"
 
 					reactions += {
 						case e:KeyTyped => {
@@ -33,12 +33,10 @@ object ClientInterface extends SimpleSwingApplication{
 				}
 
 				contents += new Button {
-
 					text = "login"
-
 					reactions += {
 						case ButtonClicked(_) => {
-							// todo
+							//login with text from TextField component
 							client.login("j.strong1@nuigalway.ie")
 						}
 					}

@@ -19,7 +19,6 @@ class ClientEntity(datastore:Datastore) extends Actor {
 	val pack = new RemotePackager
 
 	def receive = {
-
 		case All =>
 			sender ! datastore.find().map(x => parseClient(x))
 		case _ => println("unrecognised message")
