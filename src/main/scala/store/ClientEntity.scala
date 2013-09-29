@@ -20,7 +20,7 @@ class ClientEntity(datastore:Datastore) extends Actor {
 
 	def receive = {
 		case All =>
-			sender ! datastore.find().map(x => parseClient(x))
+			sender ! datastore.find().map(x => parseClient(x)).toList
 		case _ => println("unrecognised message")
 	}
 

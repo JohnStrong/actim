@@ -34,11 +34,11 @@ class Interceptor extends Actor {
 		clientStore), name = "clientEntity")
 
 	// all client accounts
-	val clients = allAccounts()
+	def clients = allAccounts()
 
-	def allAccounts():Iterator[Client] = {
+	def allAccounts():List[Client] = {
 		implicit val timeout = Timeout(5 seconds)
-		Await.result(clientEntity ? All, timeout.duration).asInstanceOf[Iterator[Client]]
+		Await.result(clientEntity ? All, timeout.duration).asInstanceOf[List[Client]]
 	}
 
 	// listen for messages
@@ -46,22 +46,29 @@ class Interceptor extends Actor {
 
 		case Account(credentials) => {
 			//todo: return xml message of userInstance parameter values
-			val email = credentials \\ "login"
-			findClient(clients, "j.strong1@nuigalway.ie") match {
-				case Some(c) => println(c)
+			findClient(clients, (credentials \\ "login").text) match {
+				case Some(c) => //todo
 				case _ => println("no client matching that email was found")
 			}
 		}
-		case Message(message) => 
-			println(message \\ "to"); println(message \\ "from") //todo
+		case Message(message) => //todo
 		case Done(x) => context.stop(self)
 		case _ => println("unrecognised message")
 	}
 
-	private def findClient(clients:Iterator[Client], target:String):Option[Client] = {
-		val c = for (client <- clients 
-				if client.email == target) yield Some(client)
+	private def findClient(clients:List[Client], target:String):Option[Client] = {
+		
+		var client:Option[Client] = None
+		var found = false
 
-		c.next()
+		for(c <- clients if found != true) {
+
+			if(c.email == target) {
+				client = Some(c)
+				found = true
+			}
+		}
+
+		client
 	}
 }
