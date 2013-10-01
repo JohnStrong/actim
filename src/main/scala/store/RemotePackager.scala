@@ -11,9 +11,7 @@ class RemotePackager {
 
 	import ClientEntity._
 
-	implicit def as(obj: DBObject) = new As(obj)
-	
-	def profile(entity: DBObject):Unit = {
+	def profile(t:Tuple4[String, String, String, List[String]]):Unit = {
 		// packaging message response of profile data to the client
 	}
 }

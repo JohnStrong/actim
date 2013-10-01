@@ -5,6 +5,9 @@ import akka.actor.Actor._
 import akka.actor.Props
 
 import com.mongodb.casbah.Imports._
+
+import chatclient.ccw.CCW._
+
 object ClientEntity {
 	case class All
 	case class Client(email:String, name:String, about:String, friends:List[String])
@@ -13,7 +16,6 @@ object ClientEntity {
 // class that contains methods to perform specific tasks against the datastore
 class ClientEntity(datastore:Datastore) extends Actor {
 	
-	import chatclient.sink.Interceptor._
 	import ClientEntity._
 
 	val pack = new RemotePackager

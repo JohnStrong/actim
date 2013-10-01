@@ -5,6 +5,8 @@ import akka.actor.Props
 
 import xml._
 
+import chatclient.ccw.CCW._
+
 /**
 * The purpose of this class is to take in raw information about an event and package it into a 
 * format expected by the remote actor
@@ -21,7 +23,6 @@ object Packager {
 class Packager extends Actor {
 
 	import Packager._
-	import Distributer._
 	
 	def receive = {
 

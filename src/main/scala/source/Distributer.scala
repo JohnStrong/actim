@@ -3,22 +3,9 @@ package chatclient.source
 import akka.actor.{ActorRef, Actor, Props, Identify, ActorIdentity, ReceiveTimeout}
 import scala.concurrent.duration._
 
-object Distributer {
+import xml._
 
-	// sends to Packager class the email entered by the client on login
-	case class Login(email: String)
-
-	case class SendMessage(to: String, from: String, body: String)
-
-	// receives a packaged (xml) message for a login
-	case class PLogin(elem: xml.Elem)
-
-	// receives a packaged (xml) message for messages
-	case class PMessage(elem: xml.Elem)
-
-	// parse user details returned from server for client home page
-	case class Home(details: xml.Elem)
-}
+import chatclient.ccw.CCW._
 
 /**
 * this class will handle package data from ui events as well as send/receieve 
@@ -26,9 +13,7 @@ object Distributer {
 **/
 class Distributer(path:String) extends Actor {
 
-	import Distributer._
 	import Packager._
-	import chatclient.sink.Interceptor._
 
 	val pack = context.actorOf(Props[Packager], name = "packager")
 	context.setReceiveTimeout(5.seconds)

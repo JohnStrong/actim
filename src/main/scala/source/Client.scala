@@ -6,13 +6,12 @@ import akka.actor.Actor
 import akka.actor.ActorSystem
 import akka.actor.Props
 
+import chatclient.ccw.CCW._
+
 /**
 * handle UI events and pass them on to the RemoteHandler Actor for processing
 **/
 class Client {
-
-	import chatclient.sink.Interceptor._
-	import Distributer._
 
 	// start connection remote actor through remote lookup class
 	val system = ActorSystem("clientsystem", 

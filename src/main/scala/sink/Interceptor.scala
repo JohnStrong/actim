@@ -12,29 +12,23 @@ import xml._
 
 import com.mongodb.casbah.Imports._
 
-object Interceptor {
+import chatclient.ccw.CCW._
 
-	// client interceptor messages
-	case class Account(message: Elem)
-	case class Message(message: Elem)
-	case class Done(status: String)
-}
 /**
 * Remote Actor that handles incoming messages from any client and responds with an xml message
 **/
 class Interceptor extends Actor {
 
 	import chatclient.store.{ClientStore, MessageStore, ClientEntity}
-	import Interceptor._
 	import ClientEntity._
 	
 	// start client entity actor
-	val clientStore = new ClientStore
-	val clientEntity = context.actorOf(Props(classOf[ClientEntity], 
+	private val clientStore = new ClientStore
+	private val clientEntity = context.actorOf(Props(classOf[ClientEntity], 
 		clientStore), name = "clientEntity")
 
 	// all client accounts
-	def clients = allAccounts()
+	private val clients = allAccounts()
 
 	def allAccounts():List[Client] = {
 		implicit val timeout = Timeout(5 seconds)
@@ -47,7 +41,7 @@ class Interceptor extends Actor {
 		case Account(credentials) => {
 			//todo: return xml message of userInstance parameter values
 			findClient(clients, (credentials \\ "login").text) match {
-				case Some(c) => //todo
+				case Some(c) => println(c); //todo
 				case _ => println("no client matching that email was found")
 			}
 		}
