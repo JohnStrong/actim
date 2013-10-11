@@ -6,7 +6,7 @@ import akka.actor.Props
 
 import com.mongodb.casbah.Imports._
 
-import chatclient.ccw.CCW._
+import chatclient.ccd.PatternPackage._
 
 object ClientEntity {
 	case class All
@@ -17,8 +17,6 @@ object ClientEntity {
 class ClientEntity(datastore:Datastore) extends Actor {
 	
 	import ClientEntity._
-
-	val pack = new RemotePackager
 
 	def receive = {
 		case All =>

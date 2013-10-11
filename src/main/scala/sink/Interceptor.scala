@@ -12,7 +12,7 @@ import xml._
 
 import com.mongodb.casbah.Imports._
 
-import chatclient.ccw.CCW._
+import chatclient.ccd.PatternPackage._
 
 /**
 * Remote Actor that handles incoming messages from any client and responds with an xml message
@@ -28,9 +28,9 @@ class Interceptor extends Actor {
 		clientStore), name = "clientEntity")
 
 	// all client accounts
-	private val clients = allAccounts()
+	//private val clients = allAccounts()
 
-	def allAccounts():List[Client] = {
+	def allAccounts:List[Client] = {
 		implicit val timeout = Timeout(5 seconds)
 		Await.result(clientEntity ? All, timeout.duration).asInstanceOf[List[Client]]
 	}
@@ -38,14 +38,14 @@ class Interceptor extends Actor {
 	// listen for messages
 	def receive = {
 
-		case Account(credentials) => {
-			//todo: return xml message of userInstance parameter values
-			findClient(clients, (credentials \\ "login").text) match {
+		case Login(email) => {
+
+			findClient(allAccounts, email) match {
 				case Some(c) => println(c); //todo
 				case _ => println("no client matching that email was found")
 			}
 		}
-		case Message(message) => //todo
+		case Message(to, from, message) => //todo
 		case Done(x) => context.stop(self)
 		case _ => println("unrecognised message")
 	}
@@ -56,7 +56,6 @@ class Interceptor extends Actor {
 		var found = false
 
 		for(c <- clients if found != true) {
-
 			if(c.email == target) {
 				client = Some(c)
 				found = true

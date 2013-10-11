@@ -6,7 +6,7 @@ import akka.actor.Actor
 import akka.actor.ActorSystem
 import akka.actor.Props
 
-import chatclient.ccw.CCW._
+import chatclient.ccd.PatternPackage._
 
 /**
 * handle UI events and pass them on to the RemoteHandler Actor for processing

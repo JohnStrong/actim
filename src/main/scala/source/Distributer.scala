@@ -5,7 +5,7 @@ import scala.concurrent.duration._
 
 import xml._
 
-import chatclient.ccw.CCW._
+import chatclient.ccd.PatternPackage._
 
 /**
 * this class will handle package data from ui events as well as send/receieve 
@@ -13,12 +13,8 @@ import chatclient.ccw.CCW._
 **/
 class Distributer(path:String) extends Actor {
 
-	import Packager._
-
-	val pack = context.actorOf(Props[Packager], name = "packager")
 	context.setReceiveTimeout(5.seconds)
-		requestIdentity()
-
+	requestIdentity()
 
 	def requestIdentity(): Unit =
 		 	context.actorSelection(path) ! Identify(path)
@@ -37,15 +33,12 @@ class Distributer(path:String) extends Actor {
 	def active(actor: ActorRef): Actor.Receive = {
 
 		// unpackaged messages
-		case Login(email) => pack ! PackageLogin(email)
-		case SendMessage(to, from, body) => pack ! PackageMessage(to, from, body)
-
-		// packaged messages
-		case PLogin(elem) => actor ! Account(elem)
-		case PMessage(elem) => actor ! Message(elem)
+		case Login(email) => actor ! Login(email)
+		case Message(to, from, message) => 
+			actor ! Message(to, from, message)
 
 		// response messages
-		case Home(details) => //todo
+		case Account(details) => //todo
 		case _ => println("unknown messege")
 	}
 }
