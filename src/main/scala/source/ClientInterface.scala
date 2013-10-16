@@ -9,35 +9,31 @@ import swing.event._
 **/
 object ClientInterface extends SimpleSwingApplication{
 
+	val loginField = new TextField {
+		text = "example@gmail.com"
+	}
+
+	val action = new Button {
+		text = "login"
+		reactions += {
+			case ButtonClicked(_) => {
+				Client.login("j.strong1@nuigalway.ie")
+			}
+		}
+	}
+
 	// Swing initalizer
+	val mainView = new FlowPanel {
+		contents += loginField
+		contents += action
+	}
+
 	def top = {
 		new MainFrame {
+
 			title = "Akka Instant Messenger"
-			contents = new FlowPanel {
-				contents += new TextField {
-					
-					editable = true
-					text = "john_doe@example.com"
 
-					reactions += {
-						case e:KeyTyped => {
-							// TODO:
-						}
-					}
-				}
-
-				contents += new Button {
-					text = "login"
-					reactions += {
-						case ButtonClicked(_) => {
-
-							//login with text from TextField component
-							Client.login("j.strong1@nuigalway.ie")
-						}
-					}
-				}
-
-			}
+			contents = mainView
 
 			size = new Dimension(400, 100)
 		}
