@@ -11,7 +11,7 @@ import chatclient.ccd.PatternPackage._
 **/
 class Distributer(path:String) extends Actor {
 
-	context.setReceiveTimeout(5.seconds)
+	context.setReceiveTimeout(3.seconds)
 	requestIdentity()
 
 	def requestIdentity(): Unit =

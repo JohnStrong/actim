@@ -9,33 +9,60 @@ import swing.event._
 **/
 object ClientInterface extends SimpleSwingApplication{
 
-	val loginField = new TextField {
+	private val client = Client
+	def top = LoginView
+}
+
+object LoginView extends Frame {
+	
+	private val textField = new TextField {
 		text = "example@gmail.com"
 	}
 
-	val action = new Button {
+	private val loginButton = new Button {
 		text = "login"
-		reactions += {
-			case ButtonClicked(_) => {
-				Client.login("j.strong1@nuigalway.ie")
-			}
-		}
 	}
 
-	// Swing initalizer
-	val mainView = new FlowPanel {
-		contents += loginField
-		contents += action
+	title = "Akka Instant Messager Login"
+
+	resizable = false
+
+	// view contents
+	contents = new BoxPanel(Orientation.Horizontal) {
+		contents += textField
+		contents += loginButton
 	}
 
-	def top = {
-		new MainFrame {
+	listenTo(loginButton)
+	reactions += {
+		case ButtonClicked(b) =>
+			Client.login(textField.text)
+	}
+}
 
-			title = "Akka Instant Messenger"
+object ChatView extends Frame {
+	
+	private val textField = new TextField {
+		text = ""
+	}
 
-			contents = mainView
+	private val loginButton = new Button {
+		text = "send"
+	}
 
-			size = new Dimension(400, 100)
-		}
+	title = "Akka Chatroom"
+
+	resizable = false
+
+	// view contents
+	contents = new BoxPanel(Orientation.Horizontal) {
+		contents += textField
+		contents += loginButton
+	}
+
+	listenTo(loginButton)
+	reactions += {
+		case ButtonClicked(b) =>
+			Client.sendMessage(textField.text)
 	}
 }
