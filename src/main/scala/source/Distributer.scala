@@ -3,8 +3,6 @@ package chatclient.source
 import akka.actor.{ActorRef, Actor, Props, Identify, ActorIdentity, ReceiveTimeout}
 import scala.concurrent.duration._
 
-import xml._
-
 import chatclient.ccd.PatternPackage._
 
 /**
@@ -32,13 +30,14 @@ class Distributer(path:String) extends Actor {
 	// send an receive messages to/from remote
 	def active(actor: ActorRef): Actor.Receive = {
 
-		// unpackaged messages
+		// client messages
 		case Login(email) => actor ! Login(email)
 		case Message(to, from, message) => 
 			actor ! Message(to, from, message)
 
-		// response messages
-		case Account(details) => //todo
+		// server responses
+		case Ready(profile) => 
+			Client.clientReady(profile.email, profile.name)
 		case _ => println("unknown messege")
 	}
 }

@@ -10,7 +10,7 @@ import chatclient.ccd.PatternPackage._
 
 object ClientEntity {
 	case class All
-	case class Client(email:String, name:String, about:String, friends:List[String])
+	case class Client(email:String, name:String)
 }
 
 // class that contains methods to perform specific tasks against the datastore
@@ -30,9 +30,7 @@ class ClientEntity(datastore:Datastore) extends Actor {
 		
 		Client(
 			obj string("email"), 
-			obj string("name"),
-			obj string("about"), 
-			obj list("friends")
+			obj string("name")
 		)
 	}
 }

@@ -41,7 +41,7 @@ class Interceptor extends Actor {
 		case Login(email) => {
 
 			findClient(allAccounts, email) match {
-				case Some(c) => println(c); //todo
+				case Some(c) => sender ! Ready(Profile(c.email, c.name))
 				case _ => println("no client matching that email was found")
 			}
 		}
@@ -50,6 +50,8 @@ class Interceptor extends Actor {
 		case _ => println("unrecognised message")
 	}
 
+	// verify that a client with the given email exists before allowing 
+	// them to chat
 	private def findClient(clients:List[Client], target:String):Option[Client] = {
 		
 		var client:Option[Client] = None

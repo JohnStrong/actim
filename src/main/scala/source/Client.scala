@@ -2,16 +2,19 @@ package chatclient.source
 
 import com.typesafe.config.ConfigFactory
 
-import akka.actor.Actor
-import akka.actor.ActorSystem
-import akka.actor.Props
+import akka.actor.{Actor, ActorSystem, Props}
+
+import akka.util.Timeout
+import scala.concurrent.duration._
+
+import swing._
 
 import chatclient.ccd.PatternPackage._
 
 /**
 * handle UI events and pass them on to the RemoteHandler Actor for processing
 **/
-class Client {
+object Client {
 
 	// start connection remote actor through remote lookup class
 	val system = ActorSystem("clientsystem", 
@@ -20,6 +23,13 @@ class Client {
 	val distributer = system.actorOf(Props(classOf[Distributer], 
 		path), name = "creationActor")
 
-	// handle ui events
-	def login(email:String):Unit = distributer ! Login(email)
+	// handle login event
+	def login(email:String):Unit = {
+		distributer ! Login(email)
+	}
+
+	// update gui with chat window upon successful login
+	def clientReady(email:String, name:String):Unit = {
+		// TODO
+	}
 }

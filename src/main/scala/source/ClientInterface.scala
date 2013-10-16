@@ -9,16 +9,10 @@ import swing.event._
 **/
 object ClientInterface extends SimpleSwingApplication{
 
-	// handle raw messages to the client message handler
-	val client = new Client
-
 	// Swing initalizer
-	def top = mainFrame(420, 120)
-
-	// build the user interface
-	private def mainFrame(w:Int, h:Int):Frame = {
+	def top = {
 		new MainFrame {
-			title = "Scala Instant Messenger"
+			title = "Akka Instant Messenger"
 			contents = new FlowPanel {
 				contents += new TextField {
 					
@@ -27,7 +21,7 @@ object ClientInterface extends SimpleSwingApplication{
 
 					reactions += {
 						case e:KeyTyped => {
-							//todo
+							// TODO:
 						}
 					}
 				}
@@ -36,15 +30,16 @@ object ClientInterface extends SimpleSwingApplication{
 					text = "login"
 					reactions += {
 						case ButtonClicked(_) => {
+
 							//login with text from TextField component
-							client.login("j.strong1@nuigalway.ie")
+							Client.login("j.strong1@nuigalway.ie")
 						}
 					}
 				}
 
 			}
 
-			size = new Dimension(w, h)
+			size = new Dimension(400, 100)
 		}
 	}
 }
