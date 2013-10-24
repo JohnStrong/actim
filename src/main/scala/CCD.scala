@@ -14,4 +14,7 @@ object PatternPackage {
 	// error messages
 	case class ServerError(message: String)
 	case class DatastoreError(message: String)
+
+	// misc
+	case class UnrecognisedMessage(warning:String)
 }

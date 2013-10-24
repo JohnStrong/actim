@@ -38,7 +38,7 @@ class Distributer(path:String) extends Actor {
 		// incoming server messages
 		case Ready(profile) => 
 			Client.clientReady(profile.email, profile.name)
-		case ServerError(message) =>
+		case UnrecognisedMessage(message) =>
 			println(message)
 		case _ => println("unknown messege")
 	}

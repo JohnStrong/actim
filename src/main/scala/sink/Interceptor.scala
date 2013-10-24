@@ -41,7 +41,7 @@ class Interceptor extends Actor {
 		case Login(email) => {
 			findClient(allAccounts, email) match {
 				case Some(c) => sender ! Ready(Profile(c.email, c.name))
-				case _ => sender ! ServerError("client email does not match any entry")
+				case _ => sender ! UnrecognisedMessage("client email does not match any entry")
 			}
 		}
 		case Message(from, message) => {
