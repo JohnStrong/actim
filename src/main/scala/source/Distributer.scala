@@ -17,7 +17,7 @@ class Distributer(path:String) extends Actor {
 	def requestIdentity(): Unit =
 		 	context.actorSelection(path) ! Identify(path)
 
-		 // listen for identity request response
+	// listen for identity request response
 	def receive = {
 		case ActorIdentity(`path`, Some(actor)) =>
 		    context.setReceiveTimeout(Duration.Undefined)
@@ -37,6 +37,7 @@ class Distributer(path:String) extends Actor {
 
 		// server responses
 		case Ready(profile) => 
+			println(profile)
 			Client.clientReady(profile.email, profile.name)
 		case _ => println("unknown messege")
 	}

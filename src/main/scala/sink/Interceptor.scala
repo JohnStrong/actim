@@ -28,7 +28,7 @@ class Interceptor extends Actor {
 		clientStore), name = "clientEntity")
 
 	// all client accounts
-	//private val clients = allAccounts()
+	private val clients = allAccounts
 
 	def allAccounts:List[Client] = {
 		implicit val timeout = Timeout(5 seconds)
