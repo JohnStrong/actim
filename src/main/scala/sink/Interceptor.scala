@@ -39,13 +39,17 @@ class Interceptor extends Actor {
 	def receive = {
 
 		case Login(email) => {
-
 			findClient(allAccounts, email) match {
 				case Some(c) => sender ! Ready(Profile(c.email, c.name))
-				case _ => println("no client matching that email was found")
+				case _ => sender ! ServerError("client email does not match any entry")
 			}
 		}
-		case Message(to, from, message) => //todo
+		case Message(from, message) => {
+			//TODO: update message table
+			// TODO: Broadcast message to all clients
+			println("message received: " + message + ", " +
+				"from client: " + from)
+		}
 		case Done(x) => context.stop(self)
 		case _ => println("unrecognised message")
 	}

@@ -11,6 +11,10 @@ object ClientInterface extends SimpleSwingApplication{
 
 	val clientEvtHandler = Client
 
+	lazy val chatFeed = new TextArea {
+		text = ""
+	}
+
 	// loaded with default login values
 	lazy val mainInput = new TextField {
 		text = "example@gmail.com"
@@ -20,17 +24,24 @@ object ClientInterface extends SimpleSwingApplication{
 		text = "Login"
 	}
 
-	
-	// flow content body of the UI
-	lazy val contentMain = new FlowPanel {
 
-		contents += mainInput
-		contents += mainEvtListener
+	// flow content body of the UI
+	lazy val contentMain = new GridPanel(3, 1) {
+
+		contents += new FlowPanel {
+			contents += mainInput
+			contents += mainEvtListener
+		}
+		contents += chatFeed
 
 		listenTo(mainEvtListener)
 		reactions += {
-			case ButtonClicked(b) =>
-               	clientEvtHandler.login(mainInput.text)
+			case ButtonClicked(b) if b.text == "Login" => {
+				clientEvtHandler.login(mainInput.text)
+            }
+            case ButtonClicked(b) if b.text == "Send" => {
+            	clientEvtHandler.sendMessage(mainInput.text)
+            }
 		}
 	}
 
@@ -41,6 +52,8 @@ object ClientInterface extends SimpleSwingApplication{
 
 		contents = contentMain
 
-		resizable = false
+		resizable = true
+
+		size = new Dimension(300,200)
 	}
 }

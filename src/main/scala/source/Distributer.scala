@@ -12,9 +12,9 @@ import chatclient.ccd.PatternPackage._
 class Distributer(path:String) extends Actor {
 
 	context.setReceiveTimeout(3.seconds)
-	requestIdentity()
+	requestIdentity
 
-	def requestIdentity(): Unit =
+	def requestIdentity: Unit =
 		 	context.actorSelection(path) ! Identify(path)
 
 	// listen for identity request response
@@ -23,22 +23,23 @@ class Distributer(path:String) extends Actor {
 		    context.setReceiveTimeout(Duration.Undefined)
 		    context.become(active(actor))
 	    case ActorIdentity(`path`, None) => println("Remote actor not availible")
-	    case ReceiveTimeout => requestIdentity()
+	    case ReceiveTimeout => requestIdentity
 	    case _ => println("Not ready yet")
 	}
 
 	// send an receive messages to/from remote
 	def active(actor: ActorRef): Actor.Receive = {
 
-		// client messages
+		// outgoing client messages
 		case Login(email) => actor ! Login(email)
-		case Message(to, from, message) => 
-			actor ! Message(to, from, message)
+		case Message(from, message) => 
+			actor ! Message(from, message)
 
-		// server responses
+		// incoming server messages
 		case Ready(profile) => 
-			println(profile)
 			Client.clientReady(profile.email, profile.name)
+		case ServerError(message) =>
+			println(message)
 		case _ => println("unknown messege")
 	}
 }

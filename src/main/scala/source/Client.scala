@@ -29,13 +29,13 @@ object Client {
 	/** 
 	 * outgoing
 	 */
-	// handle login event
+	// verification of email
 	def login(email:String):Unit = 
 		distributer ! Login(email)
 
-	// publish message from client to the server
+	// sends message to server with email
 	def sendMessage(message:String):Unit = 
-		println(Some(Client))
+		distributer ! Message("j.strong1@nuigalway.ie", message)
 	
 	/** 
 	 * incoming
@@ -43,7 +43,9 @@ object Client {
 	// update ui events on successful login
 	def clientReady(email:String, name:String):Unit = {
 
-		ClientInterface.mainInput.text = "Hello Chat!"
+		ClientInterface.chatFeed.text = "Welcome " + name
+
+		ClientInterface.mainInput.text = "broadcast to fellow clients..."
 		ClientInterface.mainEvtListener.text = "Send"
 	}
 }
