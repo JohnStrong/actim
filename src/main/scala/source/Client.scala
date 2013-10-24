@@ -30,16 +30,12 @@ object Client {
 	 * outgoing
 	 */
 	// handle login event
-	def login(email:String):Unit = {
+	def login(email:String):Unit = 
 		distributer ! Login(email)
-	}
 
 	// publish message from client to the server
-	def sendMessage(message:String):Unit = {
-
-		//todo
+	def sendMessage(message:String):Unit = 
 		println(Some(Client))
-	}
 	
 	/** 
 	 * incoming
