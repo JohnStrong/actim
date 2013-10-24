@@ -14,7 +14,6 @@ class ServerStartup {
 
 object Server {
 	
-	// entry point for the remote
 	def main(args: Array[String]) {
 		new ServerStartup
 	}

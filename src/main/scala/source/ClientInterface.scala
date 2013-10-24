@@ -11,7 +11,8 @@ object ClientInterface extends SimpleSwingApplication{
 
 	val clientEvtHandler = Client
 
-	lazy val chatFeed = new TextArea {
+	lazy val chatFeed = new TextArea(10, 1) {
+		
 		text = ""
 	}
 
