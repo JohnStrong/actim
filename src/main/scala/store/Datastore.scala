@@ -41,7 +41,7 @@ class ClientStore extends Datastore {
 }
 
 // handle message queries to datastore
-class MessageStore(email: String) extends Datastore {
+class MessageStore extends Datastore {
 
 	private val messages = DB("messages")
 

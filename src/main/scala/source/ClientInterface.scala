@@ -4,30 +4,31 @@ import swing._
 import swing.event._
 
 /**
-* This object creates the UI that a cient will interact with
-* UI events will be passed to the backend as messages to be processed and evaluated
-**/
-object ClientInterface extends SimpleSwingApplication{
+ * This object creates the UI that a cient will interact with
+ * UI events will be passed to the backend as messages to be processed and evaluated
+ **/
+object ClientInterface extends SimpleSwingApplication {
 
+	// setup of Client
 	val clientEvtHandler = Client
 
-	lazy val chatFeed = new TextArea(10, 1) {
+	// chat history feed where messages are displayed
+	val chatFeed = new TextArea(50, 50) {
 		
-		text = ""
 	}
 
 	// loaded with default login values
-	lazy val mainInput = new TextField {
-		text = "example@gmail.com"
+	val mainInput = new TextField(10) {
+		text = "example@google.com"
 	}
 
-	lazy val mainEvtListener = new Button {
+	// button to handle login and message events
+	val mainEvtListener = new Button {
 		text = "Login"
 	}
 
-
 	// flow content body of the UI
-	lazy val contentMain = new GridPanel(3, 1) {
+	private val contentMain = new GridPanel(3, 1) {
 
 		contents += new FlowPanel {
 			contents += mainInput
@@ -55,6 +56,8 @@ object ClientInterface extends SimpleSwingApplication{
 
 		resizable = true
 
-		size = new Dimension(300,200)
+		centerOnScreen()
+
+		size = new Dimension(200, 500)
 	}
 }
