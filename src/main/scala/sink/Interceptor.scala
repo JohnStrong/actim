@@ -35,11 +35,13 @@ class Interceptor extends Actor {
 	private val clientStore = new ClientStore
 	private val messageStore = new MessageStore
 
-	private val clientEntity = context.actorOf(Props(classOf[ClientEntity], 
-		clientStore), name = "clientEntity")
+	private val clientEntity = context.actorOf(
+		Props(classOf[ClientEntity], 
+			clientStore), name = "clientEntity")
 
-	private val messageEntity = context.actorOf(Props(classOf[MessageEntity], 
-		messageStore), name = "messageEntity") 
+	private val messageEntity = context.actorOf(
+		Props(classOf[MessageEntity], 
+			messageStore), name = "messageEntity")
 
 	/***********************************************
 	* store application state
@@ -49,7 +51,8 @@ class Interceptor extends Actor {
 
 	def allAccounts:List[Client] = {
 
-		Await.result(clientEntity ? All, TIMEOUT.duration).asInstanceOf[List[Client]]
+		Await.result(clientEntity ? All, 
+			TIMEOUT.duration).asInstanceOf[List[Client]]
 	}
 
 	/***********************************************
@@ -72,9 +75,8 @@ class Interceptor extends Actor {
 							TIMEOUT.duration
 						).asInstanceOf[List[Message]]
 						
-						unparsedM.foreach(m => println(m))
-
-						sender ! Ready(Profile(c.email, c.name), extractMessages(unparsedM))
+						sender ! Ready(Profile(c.email, c.name), 
+							extractMessages(unparsedM))
 					}
 
 					case _ => sender ! UnrecognisedMessage("client email does not match any entry")
@@ -82,13 +84,13 @@ class Interceptor extends Actor {
 			}
 		}
 
+		// insert the message into datastore to be retrieved by new clients	
+		// send message to all users online
 		case SentMessage(from, message) => {
 
-			// insert the message into datastore to be retrieved by new clients
 			messageEntity ! Insert(from, message)
-
-			// send message to all users online
-			connected.foreach(x => x._2 ! ReceiveMessage(from, message))
+			connected.foreach(x => 
+				x._2 ! ReceiveMessage(from, message))
 		}
 
 		case Done(x) => context.stop(self)
@@ -114,14 +116,11 @@ class Interceptor extends Actor {
 		client
 	}
 
-	private def extractMessages(unparsedMessages:List[Message]):mutable.Map[String, String] = {
+	private def extractMessages(unparsedMessages:List[Message]):List[(String, String)] = {
 		
-		var messages = mutable.Map.empty[String, String]
+		unparsedMessages.map(m => {
+			new Tuple2(m.name, m.body)
+		}).toList
 		
-		unparsedMessages.foreach(m => {
-			messages += (m.name -> m.body) 
-		})
-
-		messages
 	}
 }

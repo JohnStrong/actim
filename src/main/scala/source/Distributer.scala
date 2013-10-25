@@ -22,6 +22,7 @@ class Distributer(path:String) extends Actor {
 
 	def receive = {
 		case ActorIdentity(`path`, Some(actor)) => {
+
 		    context.setReceiveTimeout(Duration.Undefined)
 		    context.become(active(actor))
 		}
@@ -47,6 +48,7 @@ class Distributer(path:String) extends Actor {
 
 		// incoming server messages
 		case Ready(profile, messages) => {
+			
 			Client.clientReady(profile.email, profile.name)
 			Client.displayOfflineMessages(messages)
 		}

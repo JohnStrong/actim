@@ -7,7 +7,11 @@ object PatternPackage {
 	case class SendMessage(from: String, body: String)
 	case class Login(email: String)
 
-	case class Ready(clientDetails: Profile, messages: mutable.Map[String, String])
+	case class Ready(
+		clientDetails: Profile, 
+		messages: List[Tuple2[String, String]]
+	)
+	
 	case class SentMessage(name:String, body:String)
 	case class ReceiveMessage(from:String, message:String)
 	case class Done(status: String)

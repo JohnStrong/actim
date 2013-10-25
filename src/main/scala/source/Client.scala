@@ -57,12 +57,13 @@ object Client {
 		ClientInterface.mainEvtListener.text = "Send"
 	}
 
-	def displayOfflineMessages(messages: mutable.Map[String, String]):Unit = {
+	def displayOfflineMessages(messages:List[(String, String)]):Unit = {
+		
 		messages.foreach(m => {
-			ClientInterface.chatFeed.text += "\n" + m._1 + ":\t" + m._2
+			ClientInterface.chatFeed.text += "\n" + m._1 + ":\t\t" + m._2
 		})
 	}
 
  	def displayMessage(from:String, message:String):Unit =
- 		ClientInterface.chatFeed.text += "\n" + from + ":\t" + message
+ 		ClientInterface.chatFeed.text += "\n" + from + ":\t\t" + message
 }

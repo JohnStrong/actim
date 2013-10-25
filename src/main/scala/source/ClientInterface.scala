@@ -13,7 +13,7 @@ object ClientInterface extends SimpleSwingApplication {
 	val clientEvtHandler = Client
 
 	// chat history feed where messages are displayed
-	val chatFeed = new TextArea(50, 50) {
+	val chatFeed = new TextArea(100, 50) {
 		
 	}
 
