@@ -4,21 +4,39 @@ import swing._
 import swing.event._
 
 /**
+ * TODO: remove Horizontal ScrollBar in UI
+ */
+
+/**
  * This object creates the UI that a cient will interact with
  * UI events will be passed to the backend as messages to be processed and evaluated
- **/
+ */
 object ClientInterface extends SimpleSwingApplication {
 
 	// setup of Client
-	val clientEvtHandler = Client
+	private val clientEvtHandler = Client
+
+	// builds UI components on start-up
+	def top = new MainFrame {
+
+		title = "Akka Chatroom"
+
+		contents = contentMain
+
+		resizable = true
+
+		centerOnScreen()
+
+		size = new Dimension(500, 600)
+	}
 
 	// chat history feed where messages are displayed
-	val chatFeed = new TextArea(100, 50) {
-		
+	val chatFeed = new TextArea(60, 50) {
+		wordWrap = true
 	}
 
 	// loaded with default login values
-	val mainInput = new TextField(10) {
+	val mainInput = new TextField(20) {
 		text = "example@google.com"
 	}
 
@@ -28,36 +46,25 @@ object ClientInterface extends SimpleSwingApplication {
 	}
 
 	// flow content body of the UI
-	private val contentMain = new GridPanel(3, 1) {
+	private val contentMain = new BoxPanel(Orientation.Vertical) {
 
-		contents += new FlowPanel {
+		contents += new BoxPanel(Orientation.Horizontal) {
+
 			contents += mainInput
 			contents += mainEvtListener
 		}
-		contents += chatFeed
 
+		contents += new ScrollPane(chatFeed)
+
+		// register button component and handle events
 		listenTo(mainEvtListener)
 		reactions += {
-			case ButtonClicked(b) if b.text == "Login" => {
+
+			case ButtonClicked(b) if b.text == "Login" =>
 				clientEvtHandler.login(mainInput.text)
-            }
-            case ButtonClicked(b) if b.text == "Send" => {
+
+            case ButtonClicked(b) if b.text == "Send" => 
             	clientEvtHandler.sendMessage(mainInput.text)
-            }
 		}
-	}
-
-	// top level main frame of the application
-	def top = new MainFrame {
-
-		title = "Akka instant messenger"
-
-		contents = contentMain
-
-		resizable = true
-
-		centerOnScreen()
-
-		size = new Dimension(200, 500)
 	}
 }

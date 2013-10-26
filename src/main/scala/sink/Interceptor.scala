@@ -2,16 +2,14 @@ package chatclient.sink
 
 
 import scala.concurrent.Await
+import scala.concurrent.duration._
+import scala.collection._
 
-//import akka.routing.{FromConfig, Broadcast}
 import akka.actor.{ Actor, Props, ActorRef, ActorSystem}
 import com.typesafe.config.ConfigFactory
 
 import akka.pattern.ask
 import akka.util.Timeout
-
-import scala.concurrent.duration._
-import scala.collection._
 
 import com.mongodb.casbah.Imports._
 
@@ -19,16 +17,13 @@ import chatclient.ccd.PatternPackage._
 
 import chatclient.store._
 import chatclient.store.EntityMessages._
-
+	
 /**
-* Remote Actor that handles incoming messages from any client and responds with an xml message
+* Remote Actor that handles incoming messages from any client 
+* and responds with an xml message
 **/
-
 class Interceptor extends Actor {
-
-	// used for operation requiring immediate future result
-	implicit val TIMEOUT = Timeout(5 seconds)
-		
+	
 	/**********************************************
 	* get the Entity classes for wrapping db queries
 	***********************************************/
@@ -47,41 +42,37 @@ class Interceptor extends Actor {
 	* store application state
 	***********************************************/
 	private val clients = allAccounts
+
 	private val connected = mutable.Map.empty[String, ActorRef]
-
-	def allAccounts:List[Client] = {
-
-		Await.result(clientEntity ? All, 
-			TIMEOUT.duration).asInstanceOf[List[Client]]
-	}
 
 	/***********************************************
 	* listen for incoming client messages
 	***********************************************/
 	def receive = {
 
-		case Login(email) => {
+		case Login(email) if !connected.contains(email) => {
 
-			if(!connected.contains(email)) {
+			findClient(allAccounts, email) match {
 
-				findClient(allAccounts, email) match {
+				case Some(c) => {
 
-					case Some(c) => {
+					connected += (email -> sender)
 
-						connected += (email -> sender)
-
-						val unparsedM = Await.result(
-							messageEntity ? All, 
-							TIMEOUT.duration
-						).asInstanceOf[List[Message]]
-						
-						sender ! Ready(Profile(c.email, c.name), 
-							extractMessages(unparsedM))
-					}
-
-					case _ => sender ! UnrecognisedMessage("client email does not match any entry")
+					sender ! Ready(
+						Profile(c.email, c.name), 
+						extractMessages
+					)
 				}
+
+				case _ => 
+					sender ! FailedAuthError("client email does not match any entry")
 			}
+		}
+
+		case Logout(email) => {
+
+			connected - email 
+			connected.foreach((kv) => println(kv._1))
 		}
 
 		// insert the message into datastore to be retrieved by new clients	
@@ -95,32 +86,41 @@ class Interceptor extends Actor {
 
 		case Done(x) => context.stop(self)
 
-		case _ => println("unrecognised message")
+		case _ => 
+			sender ! UnkownMessageError("unrecognised message")
 	}
 
 	/***********************************************
 	* helper methods
 	***********************************************/
-	private def findClient(clients:List[Client], target:String):Option[Client] = {
+
+	private def allAccounts:List[Client] = {
 		
-		var client:Option[Client] = None
-		var found = false
+		// used for operation requiring immediate future result
+		implicit val TIMEOUT = Timeout(5 seconds)
 
-		for(c <- clients if found != true) {
-			if(c.email == target) {
-				client = Some(c)
-				found = true
-			}
-		}
-
-		client
+		Await.result(
+			clientEntity ? All, 
+			TIMEOUT.duration
+		).asInstanceOf[List[Client]]
 	}
 
-	private def extractMessages(unparsedMessages:List[Message]):List[(String, String)] = {
+	// returns an Option of an element in the 'clients' collection that equals the 'target'
+	private def findClient(clients:List[Client], target:String):Option[Client] =
+		clients.find(client => client.email == target)
+
+	// returns a List of Tuples containing a message body and the source' username
+	private def extractMessages:List[(String, String)] = {
 		
+		implicit val TIMEOUT = Timeout(10 seconds)
+
+		val unparsedMessages = Await.result(
+				messageEntity ? All, 
+				TIMEOUT.duration
+			).asInstanceOf[List[Message]]
+
 		unparsedMessages.map(m => {
 			new Tuple2(m.name, m.body)
 		}).toList
-		
 	}
 }

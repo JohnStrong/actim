@@ -23,20 +23,27 @@ case class User(email:String, name:String)
  */
 object Client {
 
-	// this client instance
 	private var thisClient:User = null
 
+	/***********************************************
+	* get a reference to the remote node
+	***********************************************/
 	val system = ActorSystem("clientsystem", 
 		ConfigFactory.load.getConfig("clientsystem"))
+
 	val SERVER_PATH = "akka.tcp://Actim@127.0.0.1:2552/user/remoteActor"
+
 	val distributer = system.actorOf(Props(classOf[Distributer], 
 		SERVER_PATH), name = "creationActor")
 
-	/** 
-	 * outgoing
-	 */
+	/***********************************************
+	* get a reference to the remote node
+	***********************************************/
 	def login(email:String):Unit = 
 		distributer ! Login(email)
+
+ 	def logout():Unit =
+ 		distributer ! Logout(thisClient.email)
 
 	def sendMessage(message:String):Unit = {
 
@@ -44,10 +51,9 @@ object Client {
 		ClientInterface.mainInput.text = ""
 	}
 	
-	/** 
-	 * incoming
-	 */
-	// update ui events on successful login
+	/***********************************************
+	* get a reference to the remote node
+	***********************************************/
 	def clientReady(email:String, name:String):Unit = {
 
 		thisClient = User(email, name)

@@ -29,7 +29,9 @@ class ClientEntity(datastore:Datastore) extends Entity with Actor {
 
 		case All =>
 			sender ! datastore.find().map(x => parseClient(x)).toList
-		case _ => println("unrecognised message")
+
+		case _ =>
+			println("unrecognied message in Entity")
 	}
 
 	private def parseClient(clientObj:DBObject):Client = {
@@ -53,13 +55,11 @@ class MessageEntity(datastore:Datastore) extends Entity with Actor {
 		case Insert(from, message) =>
 			datastore.insert(messageToDBObject(from, message))
 
-		case _ =>
-			println("unrecognised message")
+		case _ => 
+			println("unrecognied message in Entity")
 	}
 
 	private def parseMessage(messageObj:DBObject):Message = {
-
-		println(messageObj)
 
 		Message(
 			messageObj string("name"),
@@ -68,6 +68,7 @@ class MessageEntity(datastore:Datastore) extends Entity with Actor {
 	}
 
 	private def messageToDBObject(from:String, message:String):DBObject = {
+		
 		MongoDBObject(
 			"name" -> from,
 			"message" -> message

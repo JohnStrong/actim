@@ -21,6 +21,7 @@ class Distributer(path:String) extends Actor {
 		 	context.actorSelection(path) ! Identify(path)
 
 	def receive = {
+
 		case ActorIdentity(`path`, Some(actor)) => {
 
 		    context.setReceiveTimeout(Duration.Undefined)
@@ -38,17 +39,17 @@ class Distributer(path:String) extends Actor {
 	* listen for incoming client interface &
 	* remote messages
 	***********************************************/
-	def active(actor: ActorRef): Actor.Receive = {
+	def active(remoteActor: ActorRef): Actor.Receive = {
 
-		// outgoing client messages
-		case Login(email) => actor ! Login(email)
+		case Login(email) => remoteActor ! Login(email)
+
+		case Logout(email) => remoteActor ! Logout(email)
 
 		case SendMessage(from, message) => 
-			actor ! SentMessage(from, message)
+			remoteActor ! SentMessage(from, message)
 
-		// incoming server messages
 		case Ready(profile, messages) => {
-			
+
 			Client.clientReady(profile.email, profile.name)
 			Client.displayOfflineMessages(messages)
 		}
@@ -56,8 +57,11 @@ class Distributer(path:String) extends Actor {
 		case ReceiveMessage(from, message) =>
 			Client.displayMessage(from, message)
 
-		case UnrecognisedMessage(message) =>
-			println(message)
+		case FailedAuthError(err) =>
+			println(err)
+
+		case UnkownMessageError(err) =>
+			println(err)
 
 		case _ => println("unknown messege")
 	}
