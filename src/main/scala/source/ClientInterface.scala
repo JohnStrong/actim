@@ -8,16 +8,12 @@ import swing.event._
  *	TODO: add window listener to listening for window close evts
  */
 
-/**
- * This object creates the UI that a cient will interact with
- * UI events will be passed to the backend as messages to be processed and evaluated
- */
 object ClientInterface extends SimpleSwingApplication {
 
-	// setup of Client
+	// get a handle to the Client message wrapper
 	private val clientEvtHandler = Client
 
-	// builds UI components on start-up
+	// top level method, builds the UI on start-up
 	def top = new MainFrame {
 
 		title = "Akka Chatroom"
@@ -31,17 +27,14 @@ object ClientInterface extends SimpleSwingApplication {
 		size = new Dimension(500, 600)
 	}
 
-	// chat history feed where messages are displayed
 	val chatFeed = new TextArea(60, 50) {
 		wordWrap = true
 	}
 
-	// loaded with default login values
 	val mainInput = new TextField(20) {
 		text = "example@google.com"
 	}
 
-	// button to handle login and message events
 	val mainEvtListener = new Button {
 		text = "Login"
 	}
@@ -63,7 +56,6 @@ object ClientInterface extends SimpleSwingApplication {
 
 		contents += new ScrollPane(chatFeed)
 
-		// register button component and handle events
 		listenTo(mainEvtListener)
 		reactions += {
 
