@@ -4,7 +4,8 @@ import swing._
 import swing.event._
 
 /**
- * TODO: remove Horizontal ScrollBar in UI
+ *	TODO: remove Horizontal ScrollBar in UI
+ *	TODO: add window listener to listening for window close evts
  */
 
 /**
@@ -45,7 +46,13 @@ object ClientInterface extends SimpleSwingApplication {
 		text = "Login"
 	}
 
-	// flow content body of the UI
+	/**
+	 *	@return
+	 *		Swing Component containing:
+	 *			Text Field for user input
+	 *			Button for sending the input
+	 *			Text Area for displaying Chat History
+	 */
 	private val contentMain = new BoxPanel(Orientation.Vertical) {
 
 		contents += new BoxPanel(Orientation.Horizontal) {
