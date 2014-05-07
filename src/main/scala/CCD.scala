@@ -21,7 +21,7 @@ object PatternPackage {
 	case class Profile(email: String, name: String)
 
 	// error messages
-	extends Error
+	trait Error
 	case class UnkownMessageError(message: String) extends Error
 	case class FailedAuthError(warning:String) extends Error
 
